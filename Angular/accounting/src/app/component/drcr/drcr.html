@@ -1,0 +1,51 @@
+<form [formGroup]="entryForm">
+
+   <div formArrayName="entries">
+      @for(entry of entries.controls; track entry.get('id')?.value){
+
+      <div [formGroupName]="$index">
+
+         <mat-form-field appearance="outline" style="width: 80px;">
+            <mat-select #crdr formControlName="trtype" (blur)="checkBalanceAndAdd()" (selectionChange)="toggleField( $index, crdr.value)">
+               <mat-option value="debit">D</mat-option>
+               <mat-option value="credit">C</mat-option>
+            </mat-select>
+         </mat-form-field>
+
+         <mat-form-field appearance="outline" style="width: 220px;">
+            <input matInput #account type="text" formControlName="party" placeholder="party" />
+         </mat-form-field>
+
+         <mat-form-field appearance="outline" style="width: 150px;">
+            <input matInput type="number" formControlName="debit"
+               (blur)="checkBalanceAndAdd()" />
+         </mat-form-field>
+
+         <mat-form-field appearance="outline" style="width: 150px;">
+            <input matInput type="number" formControlName="credit" 
+               (blur)="checkBalanceAndAdd()" />
+         </mat-form-field>
+
+         <button type="button" (click)="removeEntry(entry.get('id')?.value)">X</button>
+
+         @if(entry.get('debit')?.touched && entry.get('debit')?.hasError('required')){
+         <div>Debit is required</div>
+         }
+         @if(entry.get('credit')?.touched && entry.get('credit')?.hasError('required')){
+         <div>Credit is required</div>
+         }
+        
+      </div>
+     
+      }
+   </div>
+</form>
+<button matButton="" type="button" (click)="addEntry()">➕ Add Field</button>
+<button matButton="" type="button" [disabled]="!entryForm.valid" (click)="submit()">Submit</button>
+
+<p>Received from parent: <b>{{ data }}</b></p>
+
+<p>Total Debit: {{ getTotals().totalDebit }} | Total Credit: {{ getTotals().totalCredit }}</p>
+
+
+<button matButton="outlined" type="button" (click)="sendBack()">Send Back to Parent</button>

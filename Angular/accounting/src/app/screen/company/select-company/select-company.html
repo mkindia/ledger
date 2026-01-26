@@ -1,0 +1,17 @@
+<p mat-dialog-title >Select Company </p>
+
+<mat-dialog-content style="min-width: 330px;">    
+    <mat-form-field style="width: calc(100% - 6px)" appearance="outline">
+    <mat-select #company [(value)]="selected">
+        @for(com of companies; track $index){
+            <mat-option [value]='com.id' >{{com.company_name  | titlecase}}</mat-option>            
+            }
+    </mat-select>
+    </mat-form-field>
+   
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton="outlined"  [disabled]="company.value == userService.selectedCompany().id"  type="button" (click)="setCompany(company.value)"  aria-label="select company">Select</button>
+    <button matButton="outlined" type="button" (click)="selectCompanyDialogref.close()">Exit</button>        
+</mat-dialog-actions>
+

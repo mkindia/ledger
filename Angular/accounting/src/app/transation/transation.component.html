@@ -1,0 +1,42 @@
+<div class="container-center">
+  <mat-card class="mat-card-width">
+    <mat-card-header>
+      <mat-card-title>
+        ledger
+      </mat-card-title>     
+    </mat-card-header>
+    <form>
+      <!-- <mat-grid-list [cols]="layout.totalCols()" rowHeight="85px">
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_1" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Company Name</mat-label>
+            <input matInput type="text" formControlName="name" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_2" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Alias</mat-label>
+            <input matInput type="text" formControlName="alies" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_3" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Print Name</mat-label>
+            <input matInput type="text" formControlName="print_name" />
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list> -->
+      <h2>Parent Component</h2>
+     
+<button matButton="outlined" type="button" (click)="loadComponent()">Load Child</button>
+<button matButton="outlined" type="button" (click)="callChild()">Call Child Method</button>
+@if(childMessage){<p>Message from Child: {{ childMessage }}</p> }
+
+<ng-container #container></ng-container>
+    </form>
+    <mat-card-actions align="end">
+      <button matButton="outlined" (click)="getledger()">Submmit</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+

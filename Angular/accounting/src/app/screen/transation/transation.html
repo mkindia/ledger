@@ -1,0 +1,99 @@
+<div class="container-center">
+   <mat-card class="mat-card-width">
+      <mat-card-header>
+         <!-- {{router.url.substring(1).toUpperCase()}} -->
+         {{voucher_type | titlecase}}
+      </mat-card-header>
+      <mat-card-content style="padding: 0px;">
+         <form [formGroup]="entryForm">
+            <div style="float: right; margin-bottom: 30px;">
+               <mat-form-field appearance="outline" floatLabel="auto">
+                  <mat-label>Date</mat-label>
+                  <input [formControl]="dateControl" (dateChange)="onDateChange($event)" required matInput
+                     [matDatepicker]="picker" />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+               </mat-form-field>
+
+            </div>
+            <div formArrayName="entries" style="max-height: 400px; overflow-y: auto; width: 100%;">
+               @for(entry of entries.controls; track entry.get('id')?.value; )
+               {
+               <div style="float: left; width: calc(100% - 45px)">
+                  <div style="padding-right: 10px; padding-top: 25px; float: left;">
+                     {{$index}}
+                  </div>
+                  <mat-card appearance="outlined" style="margin-bottom: 5px; padding: 0px; border-radius: 0px;">
+                     <!-- <mat-card-content style="padding: 0px; padding-bottom: 5px;"> -->
+                     <mat-grid-list [formGroupName]="$index" [cols]="layout.totalCols()" rowHeight="45px">
+                        <mat-grid-tile [colspan]="layout.colSpan().colspan_1" [rowspan]="1">
+                           <mat-form-field style="margin-top: 20px;" class="balance-cell">
+                              <mat-label>D/C</mat-label>
+                              <mat-select [ngClass]="crdr.value == 'credit' ? 'cr' : 'dr' " #crdr
+                                 formControlName="entry_type" (blur)="checkBalanceAndAdd()"
+                                 (selectionChange)="toggleField( $index, crdr.value)">
+                                 <mat-option value="debit">D</mat-option>
+                                 <mat-option value="credit">C</mat-option>
+                              </mat-select>
+                           </mat-form-field>
+                        </mat-grid-tile>
+
+                        <mat-grid-tile [colspan]="layout.colSpan().colspan_2" [rowspan]="1">
+                           <mat-form-field style="margin-top: 20px;" class="balance-cell">
+                              <mat-label>Account</mat-label>
+                              <input matInput appTitleCase #account type="text" formControlName="ledger"
+                                 [ngClass]="crdr.value == 'credit' ? 'cr' : 'dr' " [matAutocomplete]="auto"
+                                 (input)="filter($index, account.value)" (focus)="filter($index, account.value)" />
+                              @if(entry.get('ledger')?.touched && entry.get('ledger')?.hasError('required')){
+                              <mat-error>Required</mat-error>
+                              }
+
+                              <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayFn">
+                                 @for (option of filteredLedger; track option.id) {
+                                 @if(option.ledger_type == 2){
+                                 <mat-option [value]="option">{{option.name | titlecase}}&nbsp;<span
+                                       style="color: rgb(2, 90, 197);"> ({{option.group | titlecase}})
+                                    </span></mat-option>
+                                 }
+                                 }
+                              </mat-autocomplete>
+                           </mat-form-field>
+                        </mat-grid-tile>
+
+                        <mat-grid-tile [colspan]="layout.colSpan().colspan_3" [rowspan]="1">
+                           <mat-form-field style="margin-top: 20px;">
+                              <mat-label>Amount</mat-label>
+                              <input matInput #amount type="number" formControlName="amount"
+                                 (blur)="checkBalanceAndAdd()" max="99999999.99" />
+                           </mat-form-field>
+
+                        </mat-grid-tile>
+                        <mat-grid-tile [colspan]="layout.colSpan().colspan_4" [rowspan]="1">
+                           <mat-form-field style="margin-top: 20px;">
+                              <mat-label>Narration</mat-label>
+                              <input matInput type="text" formControlName="narration" />
+                           </mat-form-field>
+                        </mat-grid-tile>
+                     </mat-grid-list>
+                  </mat-card>
+               </div>
+               <div style="width: 45px; height: 45px; float: right;">
+                  <button mat-icon-button type="button" (click)="removeEntry(entry.get('id')?.value)">
+                     <mat-icon>close</mat-icon>
+                  </button>
+               </div>
+               }
+            </div>
+
+            <button matButton="" type="button" (click)="addEntry()">➕ Add Field</button>
+            <button matButton="" type="button" [disabled]="!entryForm.valid || selectedDate == undefined  "
+               (click)="submit()">Submit</button>
+         </form>
+
+         <p>{{layout.appLayOut().XSmall?.colspan_6}}</p>
+         <p>Total Debit: {{ getTotals().totalDebit }} | Total Credit: {{ getTotals().totalCredit }}</p>
+
+      </mat-card-content>
+
+   </mat-card>
+</div>

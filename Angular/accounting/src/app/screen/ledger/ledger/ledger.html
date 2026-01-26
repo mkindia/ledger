@@ -1,0 +1,32 @@
+<div class="container-center">
+    <mat-card class="mat-card-width">
+        <mat-card-header>
+            <mat-card-title>Create Client</mat-card-title>
+        </mat-card-header>
+        <form [formGroup]="ledgerForm">
+            <mat-grid-list [cols]="layout.totalCols()" rowHeight="90px">
+                <mat-grid-tile [colspan]="layout.colSpan().colspan_1"><mat-form-field appearance="outline">
+                        <mat-label>Client Name</mat-label>
+                        <input #ledger_name  placeholder="enter name" formControlName="ledger_name"
+                            (keydown)="focus.focus($event,null,null,ledger_name.value)" matInput>
+                    </mat-form-field></mat-grid-tile>
+              
+                <mat-grid-tile [colspan]="layout.colSpan().colspan_2" [rowspan]="1">
+                    <mat-form-field appearance="outline">
+                        <mat-label>{{ledger_type | titlecase }}</mat-label>
+                        <mat-select #under_ledger formControlName="under_ledger" name="under_ledger">
+                            @for (ledger of userService.selectedCompanyLedgerList() ; track $index) {
+                            @if(ledger.ledger_type == 1){
+                            <mat-option [value]="ledger">{{ledger.name| titlecase}}</mat-option>
+                            }
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>            
+            </mat-grid-list>
+        </form>
+        <mat-card-actions align="end">
+            <button matButton="outlined" title="Save Client" (click)="subbmit(ledgerForm.value)"><mat-icon>save</mat-icon> Save</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

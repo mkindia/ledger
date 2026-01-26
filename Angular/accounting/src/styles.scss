@@ -1,0 +1,175 @@
+@use '@angular/material' as mat;
+
+
+html {
+
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,      
+    ));
+
+
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light dark;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%; 
+  // overscroll-behavior-y: contain;
+  background-color: white;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;  
+}
+
+.dark-theme {
+  color-scheme: dark;
+  // @include mat.theme((    
+  //   color: (
+  //     primary: mat.$cyan-palette,
+  //   ),
+  // ));
+  --bg-color: rgb(0, 0, 0);
+  // background-color: var(--bg-color);
+  // --sidenav-bg: mat.get-color-from-palette($dark-theme.color.background-color);
+   @include mat.sidenav-overrides((
+  content-background-color: var(--bg-color),
+  container-background-color:  var(--bg-color),
+  ));
+}
+
+.light-theme {
+  color-scheme: light;
+  --bg-color: rgb(255, 255, 255);  
+  // background-color: var(--bg-color);
+  //  --sidenav-bg:  mat.get-color-from-palette($light-theme.color.background-color);
+  @include mat.sidenav-overrides((
+  content-background-color: var(--bg-color),
+  container-background-color:  var(--bg-color),
+  ));
+}
+
+:root {
+  // @include mat.all-component-themes($light-theme);
+  //  --sidenav-bg: mat.get-color-from-palette($light-theme.color.bg-color);
+    // --sidenav-bg: mat.get-color-from-palette($light-theme.color.background);
+   
+  // background-color: var(--sidenav-bg);
+  @include mat.sidenav-overrides((
+    // container-shape: 30px,
+    container-elevation-shadow: 5,
+    container-divider-color:  solid,
+    container-width: 290px,
+    
+      // container-background-color: transparent,
+      content-background-color: transparent,      
+      // container-text-color: black,
+      //  content-text-color: black  
+    ));
+  @include mat.button-overrides((
+    text-container-height: 35px,
+    tonal-container-height: 35px,
+    outlined-container-height: 35px,
+    filled-container-height: 35px,
+    ));
+   @include mat.toolbar-overrides((
+    container-background-color: transparent,
+      // container-text-color: black,
+    ));
+
+  @include mat.list-overrides(( 
+    // active-indicator-color: orange,
+      // active-indicator-shape: red,   
+      // list-item-label-text-color: black,
+      list-item-label-text-size: 18px,
+      
+    ));
+
+    @include mat.card-overrides((
+    // elevated-container-color: rgba(125, 125, 125, 0.127),   
+  ));
+
+    @include mat.form-field-overrides((
+    // container-height : 20px,
+    // container-text-line-height: 20px,
+    // filled-with-label-container-padding-top:10px,
+    // filled-with-label-container-padding-bottom:10px,
+    // disabled-input-text-placeholder-color: orange,
+    // disabled-leading-icon-color: red,
+    
+  ));
+
+  // @include mat.dialog-overrides((    
+  //   // container-color: rgb(143, 143, 143),
+  //   // subhead-color: red,
+  // ));
+
+ }
+
+// mat-sidenav {
+//   background-color: var(--sidenav-bg);
+// }
+// mat-form-field {
+//   padding-right: 3px;
+//   padding-left: 3px;
+// }
+
+.my-custom-snackbar {
+  text-align: center;
+  margin: 0 auto !important;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-transform: capitalize;
+  /* right: 25px; */
+  /* top: 9px; */
+}
+
+mat-card {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+mat-card-header {
+  margin-bottom: 15px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.container-center {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.mat-card-width {
+  width: calc(100% - 20px);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

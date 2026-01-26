@@ -1,0 +1,26 @@
+// .custom-width {
+//   width: 400px;
+// }
+
+// ::ng-deep .custom-height .mat-form-field-infix {
+//   height: 10px;
+// }
+
+// ::ng-deep .custom-height input.mat-input-element {
+//   padding: 18px 0;
+//   font-size: 16px;
+// }
+
+
+.debitTextColor {
+  color: rgb(0, 255, 115);
+}
+
+.creditTextColor {
+  color: rgb(255, 0, 0);
+}
+
+.balance-cell .cr { color: #c62828; font-weight: 500; }   // red for credit
+.balance-cell .dr { color: #1cc725; font-weight: 500; }   // green for debit
+.balance-cell .zero { color: #616161; }                   // neutral for zero
+.balance-cell { font-variant-numeric: tabular-nums; }

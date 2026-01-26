@@ -1,0 +1,39 @@
+// .transaction-table {
+//   width: 100%;
+// }
+
+.right {
+  text-align: right;
+}
+
+.center{
+  text-align: center;
+}
+
+// .selectable-row {
+//   cursor: pointer;
+// }
+
+// .selectable-row:hover {
+//   background-color: #8989892e;
+// }
+
+// .selectable-row:focus {
+//   outline: 2px solid #1976d2;
+//  background-color: #8989892e;
+// }
+
+tr[mat-row] {
+  outline: none;
+}
+
+.active-row,
+tr[mat-row]:focus {
+  background-color: rgba(63, 81, 181, 0.12);
+}
+
+
+.balance-cell .cr { color: #c62828; font-weight: 500; }   // red for credit
+.balance-cell .dr { color: #2e7d32; font-weight: 500; }   // green for debit
+.balance-cell .zero { color: #616161; }                   // neutral for zero
+.balance-cell { text-align: right; font-variant-numeric: tabular-nums; }

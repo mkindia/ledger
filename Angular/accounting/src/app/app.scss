@@ -1,0 +1,50 @@
+.sidenav-container {
+  height: 100%;
+  // background-color: transparent;
+  position: fixed;
+  width: 100%;
+}
+
+mat-sidenav {
+  border-radius: 0px;
+}
+
+// mat-sidenav-content {
+//   padding-left: 5px;
+//   padding-right: 5px;
+//   padding-top: 5px;
+// }
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+.activeUrl{ 
+  background-color: #666e7a;
+  // border: 1px solid rgb(49, 62, 105);;
+}
+
+.activeUrlText {
+  color: rgb(82, 207, 245);
+}
+
+.inner-item {
+  width: 100%;             /* Force the item to take full width */
+  box-sizing: border-box;  /* Prevent overflow */
+  text-align: center;      /* Center text inside */
+}
+
+.content-center {
+  display: flex;
+  justify-content: center; /* Horizontal centering */
+  align-items: center;  /* Vertical centering */
+  width: 100%;
+}
+

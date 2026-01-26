@@ -1,0 +1,37 @@
+[
+    {       
+        "groups": [
+            {
+                "code": 1,
+                "master_type": 0,
+                "neme": "assets",
+                "parent_group": 0
+            },
+            {
+                "code": 2,
+                "master_type": 0,
+                "neme": "income",
+                "parent_group": 0
+            },
+            {
+                "code": 3,
+                "master_type": 0,
+                "neme": "liabilities",
+                "parent_group": 0
+            },
+            {
+                "code": 4,
+                "master_type": 0,
+                "neme": "expenses",
+                "parent_group": 0
+            }
+            ,
+            {
+                "code": 4,
+                "master_type": 0,
+                "neme": "expenses",
+                "parent_group": 0
+            }
+        ]
+    }
+]

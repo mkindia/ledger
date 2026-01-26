@@ -1,0 +1,64 @@
+<div class="container-center">
+<mat-card class="mat-card-width">
+    <mat-card-header>       
+        <mat-card-title>Create accounting group</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+    <mat-grid-list [cols]="layout.totalCols()" rowHeight="75px">
+        <form [formGroup]="groupForm">
+            <mat-grid-tile [colspan]="layout.colSpan().colspan_1" [rowspan]="1">
+                <mat-form-field appearance="outline">
+                    <mat-label>Group Name</mat-label>
+                    <input formControlName="name" #company_name
+                        (keydown)="focus.focus($event,null,null,company_name.value)" matInput>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="layout.colSpan().colspan_2" [rowspan]="1">
+                <mat-form-field appearance="outline">
+                    <mat-label>Alias</mat-label>
+                    <input #alias (keydown)="focus.focus($event,null,null,company_name.value)" matInput>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="layout.colSpan().colspan_3" [rowspan]="1">               
+                 <section >
+                    <mat-checkbox (change)="groupSelect($event.checked)"  #primary formControlName="is_primary">Is
+                        Primary</mat-checkbox>
+                </section>               
+            </mat-grid-tile>
+               
+            <mat-grid-tile [colspan]="layout.colSpan().colspan_4" [rowspan]="1">            
+                <mat-form-field appearance="outline">
+                    <mat-label>{{group_type |  titlecase }}</mat-label>
+                    <mat-select formControlName="under" name="food">                                                
+                        @for (group of allLedger ; track $index) {
+                            @if(group.ledger_type == 0 &&  group_type != 'under group' && group_type != 'under group'){
+                        <mat-option [value]="group">{{group.name | titlecase}}</mat-option>
+                        
+                        }@else if (group.ledger_type == 1 && group_type == 'under group') {
+                             <mat-option [value]="group">{{group.name | titlecase}}</mat-option>
+                        }
+                    }
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile>
+            <!-- <mat-grid-tile>
+                <mat-form-field style="width: calc(100% - 4px);" appearance="outline">
+                    <mat-label>{{group_type |  titlecase }}</mat-label>
+                    <mat-select formControlName="nature_of_group" name="food">                                                
+                        @for (group of underGroup; track $index) {
+                        <mat-option [value]="group.value">{{group.viewValue | titlecase}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </mat-grid-tile> -->
+        </form>
+    </mat-grid-list>
+    </mat-card-content>
+     <mat-card-actions align="end">
+        <button matButton="outlined" title="save group" (click)="subbmit(groupForm.value)">
+
+            <mat-icon>save</mat-icon>
+            Submit</button>
+    </mat-card-actions>
+</mat-card>
+</div>

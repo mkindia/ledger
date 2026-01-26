@@ -1,0 +1,13 @@
+<p mat-dialog-title>Varification Code</p>
+<mat-dialog-content style="padding: 15px;">
+    <form [formGroup]="codeForm">       
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Code</mat-label>
+            <input matInput name="code" type="text" formControlName="code" />           
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">    
+    <button [disabled]="!codeForm.valid" matButton="outlined"  type="button" (click)="code()" aria-label="code">Submit</button>
+    <button matButton="outlined" type="button" (click)="exit()">Exit</button>
+</mat-dialog-actions>

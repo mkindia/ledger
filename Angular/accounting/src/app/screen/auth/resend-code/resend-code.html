@@ -1,0 +1,13 @@
+<p mat-dialog-title>Email Verify</p>
+<mat-dialog-content style="padding: 15px;">
+    <form [formGroup]="resendCodeForm">       
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Email</mat-label>
+            <input matInput name="email" type="email" formControlName="email" />           
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">    
+    <button [disabled]="!resendCodeForm.valid" matButton="outlined"  type="button" (click)="resendCode()" aria-label="login">Submit</button>
+    <button matButton="outlined" type="button" (click)="exit()">Exit</button>
+</mat-dialog-actions>

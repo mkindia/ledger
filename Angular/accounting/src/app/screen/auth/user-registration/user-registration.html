@@ -1,0 +1,43 @@
+<div class="container-center">
+
+  <mat-card style="max-width: 450px; margin: 10px;">
+
+    <mat-card-header>
+      <mat-card-title>
+        SignUp
+      </mat-card-title>
+    </mat-card-header>
+    <form #userRegistrationForm [formGroup]="registrationForm">    
+      <mat-form-field appearance="outline">
+        <mat-label>Username:</mat-label>
+        <input matInput type="text" formControlName="username" autocomplete="off" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email:</mat-label>
+        <input matInput type="email" aria-label="Please Enter Email" formControlName="email" autocomplete="off" />
+      </mat-form-field>
+     
+      <mat-form-field appearance="outline">
+        <mat-label>First Name:</mat-label>
+        <input matInput type="text" formControlName="first_name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name:</mat-label>
+        <input matInput type="text" formControlName="last_name" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password:</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>    
+     
+      <mat-card-actions align="end">       
+        <button matButton="" type="button" (click)="reSendCode()">User Verify</button>
+        <button [disabled]="!registrationForm.valid" matButton="outlined" type="button" (click)="onSubmit()">Register</button>    
+        <a type="button" matButton="outlined" href="/">Exit</a>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+</div>

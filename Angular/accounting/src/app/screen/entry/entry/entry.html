@@ -1,0 +1,72 @@
+<p>entry works!</p>
+<form [formGroup]="entryForm" class="form-row">
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option value="Debit">Debit</mat-option>
+      <mat-option value="Credit">Credit</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Account</mat-label>
+    <input matInput formControlName="account">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Amount</mat-label>
+    <input matInput type="number" formControlName="amount">
+  </mat-form-field>
+
+  <mat-form-field class="full">
+    <mat-label>Narration</mat-label>
+    <input matInput formControlName="narration">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="addOrUpdate()">
+    {{ editIndex !== null ? 'Update' : 'Add' }}
+  </button>
+</form>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let e">{{ e.type }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="account">
+    <th mat-header-cell *matHeaderCellDef>Account</th>
+    <td mat-cell *matCellDef="let e">{{ e.account }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef>Amount</th>
+    <td mat-cell *matCellDef="let e">{{ e.amount | number:'1.2-2' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="narration">
+    <th mat-header-cell *matHeaderCellDef>Narration</th>
+    <td mat-cell *matCellDef="let e">{{ e.narration }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let e; let i = index">
+      <button mat-icon-button color="primary" (click)="edit(e, i)">
+        ✏️
+      </button>
+      <button mat-icon-button color="warn" (click)="delete(i)">
+        🗑️
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<div class="totals">
+  <strong>Total Debit:</strong> {{ totalDebit }} |
+  <strong>Total Credit:</strong> {{ totalCredit }}
+</div>

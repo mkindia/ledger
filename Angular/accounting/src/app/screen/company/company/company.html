@@ -1,0 +1,35 @@
+<div class="container-center">
+  <mat-card class="mat-card-width">
+    <mat-card-header>
+      <mat-card-title>
+        Company
+      </mat-card-title><span class="spacer"></span>
+      <button matIconButton aria-label="Example icon button with a vertical three dot icon" (click)="commonService.goBack()"><mat-icon>close</mat-icon></button>
+    </mat-card-header>
+    <form [formGroup]="companyForm">
+      <mat-grid-list [cols]="layout.totalCols()" rowHeight="85px">
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_1" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Company Name</mat-label>
+            <input matInput type="text" formControlName="company_name" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_2" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Alias</mat-label>
+            <input matInput type="text" formControlName="alies" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="layout.colSpan().colspan_3" [rowspan]="1">
+          <mat-form-field appearance="outline">
+            <mat-label>Print Name</mat-label>
+            <input matInput type="text" formControlName="print_name" />
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </form>
+    <mat-card-actions align="end">
+      <button matButton="outlined" [disabled]="!companyForm.valid" (click)="submit(companyForm.value)">Submmit</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

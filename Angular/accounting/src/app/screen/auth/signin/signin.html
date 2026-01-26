@@ -1,0 +1,17 @@
+<p mat-dialog-title>Please Login</p>
+<mat-dialog-content style="padding-top: 10px;">
+    <form [formGroup]="loginForm">
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Username</mat-label>
+            <input cdkFocusInitial matInput name="username" formControlName="username" type="text" autocomplete="off" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>password</mat-label>
+            <input matInput name="password" type="password" formControlName="password" />           
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">    
+    <button [disabled]="!loginForm.valid" matButton="outlined"  type="button" (click)="loginProcess(loginForm.value)" aria-label="login" tabIndex="0" appKeyboardNav>SignIn</button>
+    <button matButton="outlined" type="button" (click)="exit()">Exit</button>
+</mat-dialog-actions>

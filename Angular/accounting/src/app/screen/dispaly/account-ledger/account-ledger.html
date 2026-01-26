@@ -1,0 +1,96 @@
+<mat-card (click)="focusRow(activeIndex)">
+  <mat-card-header>
+   <span style="font-weight: bold;">Account : {{Account_name}}</span>
+  </mat-card-header>
+ 
+<table appKeyboardNav appMouseNav mat-table [dataSource]="dataSource" class="mat-elevation-z2 transaction-table">
+
+  <!-- Date -->
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef>Date</th>
+    <td mat-cell *matCellDef="let row">
+      {{ row.date | date:'dd-MM-yyyy' }}
+    </td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <!-- Voucher Type -->
+  <ng-container matColumnDef="voucherType">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let row">{{ row.voucher_type | titlecase}}</td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <!-- Voucher No -->
+  <ng-container matColumnDef="voucherNo">
+    <th mat-header-cell *matHeaderCellDef>Voucher No</th>
+    <td mat-cell *matCellDef="let row">{{ row.transaction }}</td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <!-- Account -->
+  <ng-container matColumnDef="account">
+    <th mat-header-cell *matHeaderCellDef>Account</th>
+    <td mat-cell *matCellDef="let row">{{ row.against | titlecase }}</td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <!-- Debit -->
+  <ng-container matColumnDef="debit">
+    <th mat-header-cell *matHeaderCellDef class="right">Debit</th>
+    <td mat-cell *matCellDef="let row" class="right">
+      {{ row.entry_type === 'debit' ? (row.amount | number:'1.2-2') : '' }}
+    </td>
+    <td mat-footer-cell *matFooterCellDef class="right" style="font-size: 14px; font-weight: bold; color: #2e7d32;">{{TotalDebit | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- Credit -->
+  <ng-container matColumnDef="credit">
+    <th mat-header-cell *matHeaderCellDef class="right">Credit</th>
+    <td mat-cell *matCellDef="let row" class="right">
+      {{ row.entry_type === 'credit' ? (row.amount | number:'1.2-2') : '' }}
+    </td>
+    <td mat-footer-cell *matFooterCellDef class="right" style="font-size: 14px; font-weight: bold; color: #c62828;" > {{TotalCredit | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- Balance -->
+  <ng-container matColumnDef="balance">
+    <th mat-header-cell *matHeaderCellDef class="right">Balance</th>
+    <td mat-cell *matCellDef="let row" class="balance-cell">
+     
+      <span [ngClass]="row.balance < 0 ? 'cr' : (row.balance > 0 ? 'dr' : 'zero')"> 
+        {{ row.balance < 0 ? 'Cr' : (row.balance > 0 ? 'Dr' : '') }} 
+        {{ (row.balance | abs) | number:'1.2-2' }} 
+      </span>
+    </td>
+    <td mat-footer-cell *matFooterCellDef></td>
+  </ng-container>
+
+  <!-- Narration -->
+  <ng-container matColumnDef="narration">
+    <th mat-header-cell *matHeaderCellDef class="center">Short Narration</th>
+    <td mat-cell *matCellDef="let row" class="center">{{ row.narration | titlecase}}</td>
+    <td mat-footer-cell *matFooterCellDef class="balance-cell">
+      <!-- Closing Bal = {{TotalDebit - TotalCredit | abs | number:'1.2-2'}} -->
+      <span style="font-size: 16px;" [ngClass]="TotalDebit - TotalCredit < 0 ? 'cr' : (TotalDebit - TotalCredit > 0 ? 'dr' : 'zero')"> 
+       Closing Bal = {{ TotalDebit - TotalCredit < 0 ? 'Cr' : (TotalDebit - TotalCredit > 0 ? 'Dr' : '') }} 
+        {{ (TotalDebit - TotalCredit | abs) | number:'1.2-2' }} 
+      </span>
+    </td>
+  </ng-container>
+
+  <!-- Header & Rows -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr  mat-row *matRowDef="let row; let i=index; columns: displayedColumns;" tabindex="0" matRipple 
+   [class.active-row]="i === activeIndex" (focus)="activeIndex = i" (click)="selectRow(i)"
+  ></tr>
+
+  <tr mat-footer-row *matFooterRowDef="displayedColumns" style="background-color: rgba(131, 131, 131, 0.096); height: 50px;"></tr>
+
+</table>
+<!--  
+  <span > 
+      Closing Bal =  {{ TotalDebit - TotalCredit < 0 ? 'Cr' : (TotalDebit - TotalCredit > 0 ? 'Dr' : '') }} 
+        {{ (TotalDebit - TotalCredit | abs) | number:'1.2-2' }} 
+      </span> -->
+</mat-card>
