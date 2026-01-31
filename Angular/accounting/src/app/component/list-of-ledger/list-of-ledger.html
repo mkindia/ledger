@@ -1,11 +1,14 @@
-<p mat-dialog-title>Select Ledger </p>
-<mat-dialog-content style="min-width: 330px;">
-    <app-account-list [options]="userService.selectedCompanyLedgerList()" ></app-account-list>
+<div mat-dialog-title style="display: flex; justify-content: space-between;">Select Ledger
+    <button mat-icon-button type="button" (click)="dialogRef.close()">
+        <mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+    <app-account-list [options]="userService.selectedCompanyLedgerList()"></app-account-list>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button matButton="" (click)="selectedAccount()">Show</button>
-    <button matButton="" type="button" (click)="dialogRef.close()" appKeyboardNav>
+    <!-- <button matButton="" type="button" (click)="dialogRef.close()" appKeyboardNav>
         Exit
     </button>
-   
+    -->
 </mat-dialog-actions>

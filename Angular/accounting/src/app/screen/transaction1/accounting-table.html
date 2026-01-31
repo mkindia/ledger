@@ -16,9 +16,11 @@
         <td mat-cell *matCellDef="let element">
           <mat-form-field appearance="outline" class="full-width">
             <mat-select [(ngModel)]="element.type">
-              <mat-option *ngFor="let type of accountTypes" [value]="type">
+              @for(type of accountTypes; track $index; ){
+              <mat-option [value]="type">
                 {{ type }}
               </mat-option>
+            }
             </mat-select>
           </mat-form-field>
         </td>

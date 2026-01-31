@@ -4,7 +4,7 @@ from django.contrib.admin import AdminSite  # type: ignore
 # from account.views import (CompanyView)
 from useraccount.views import (CustomTokenObtainPairView, UserAccountView)
 from ledger.views import (CompanyView, LedgerView, )
-from transaction.views import TransactionViewSet, bulk_delete_transactions
+from transaction.views import TransactionViewSet, EntryViewSet
 from rest_framework.routers import DefaultRouter # type: ignore
 from rest_framework_simplejwt.views import TokenRefreshView # type: ignore
 
@@ -19,11 +19,12 @@ router.register('company', CompanyView, basename='company' )
 router.register("user", UserAccountView, basename="user")
 router.register("ledger", LedgerView, basename="ledger")
 router.register("transaction", TransactionViewSet, basename="transaction")
+router.register('entries', EntryViewSet, basename='entries')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('transactions/bulk-delete/', bulk_delete_transactions),
+    # path('transactions/bulk-delete/', bulk_delete_transactions),
     # path('signup/', UserAccountView.as_view(), name='signup'),
     # path('verify-email/<uuid:uuid>/', VerifyEmailView.as_view(), name='verify-email'),
     path('signin/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),

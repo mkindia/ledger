@@ -111,7 +111,7 @@ export class UserService {
       if (this.selectedCompany().id != undefined) {
         this.http.get<ledger[]>('ledger/', { company: this.selectedCompany().id}).subscribe((value) => {
           this.selectedCompanyLedgerList.set(value);
-        })
+        });
       }
     }
 

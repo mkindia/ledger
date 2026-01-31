@@ -1,0 +1,34 @@
+<div mat-dialog-title style="display: flex; justify-content: space-between;">{{'List Of '+router.url.split('/')[2] + ' Voucher' | titlecase}}
+    <button mat-icon-button type="button" (click)="dialogRef.close()">
+        <mat-icon>close</mat-icon></button>
+</div>
+<mat-dialog-content>
+    <!-- <mat-form-field appearance="outline">
+        <mat-label>{{'voucher-list'}}</mat-label>
+        <mat-select  name="food">                             
+            <mat-option value="{{'All'}}">All</mat-option>
+            <mat-option value="{{'On Date'}}">On Date</mat-option>
+            <mat-option value="{{'Date Range'}}">Date Range</mat-option>
+        </mat-select>
+   </mat-form-field> -->
+    <mat-form-field>
+        <mat-label>Start date</mat-label>
+        <input matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>End date</mat-label>
+        <input matInput [matDatepicker]="picker1">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton="" (click)="submit()">Submit</button>
+    <!-- <button matButton="" type="button" (click)="dialogRef.close()" appKeyboardNav>
+        Exit
+    </button>
+    -->
+</mat-dialog-actions>

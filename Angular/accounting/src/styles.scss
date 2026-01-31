@@ -54,6 +54,11 @@ body {
   content-background-color: var(--bg-color),
   container-background-color:  var(--bg-color),
   ));
+  
+  @include mat.dialog-overrides((    
+    container-color: rgb(64, 64, 64),
+    // subhead-color: red,
+  ));
 }
 
 .light-theme {
@@ -64,6 +69,12 @@ body {
   @include mat.sidenav-overrides((
   content-background-color: var(--bg-color),
   container-background-color:  var(--bg-color),
+  ));
+
+  
+  @include mat.dialog-overrides((    
+    container-color: rgb(219, 219, 219),
+    // subhead-color: red,
   ));
 }
 
@@ -110,17 +121,13 @@ body {
     @include mat.form-field-overrides((
     // container-height : 20px,
     // container-text-line-height: 20px,
-    // filled-with-label-container-padding-top:10px,
-    // filled-with-label-container-padding-bottom:10px,
+    // filled-with-label-container-padding-top:20px,
+    // filled-with-label-container-padding-bottom:20px,
     // disabled-input-text-placeholder-color: orange,
     // disabled-leading-icon-color: red,
     
   ));
 
-  // @include mat.dialog-overrides((    
-  //   // container-color: rgb(143, 143, 143),
-  //   // subhead-color: red,
-  // ));
 
  }
 

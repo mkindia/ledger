@@ -30,7 +30,7 @@ export interface AccountingEntry {
     MatFormFieldModule
   ],
   templateUrl: './accounting-table.html',
-  styleUrls: ['./accounting-table.css']
+  styleUrls: ['./accounting-table.scss']
 })
 export class AccountingTable {
   displayedColumns: string[] = ['type', 'account', 'amount', 'narration', 'actions'];

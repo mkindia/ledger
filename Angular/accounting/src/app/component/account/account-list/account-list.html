@@ -1,16 +1,13 @@
-<mat-form-field>
+<mat-form-field appearance="outline" style="padding-top: 10px;">
     <mat-label>Account List</mat-label>
-    <input matInput appTitleCase [formControl]="accountControl" #account
-        type="text" style="color: rgb(2, 210, 196);" [matAutocomplete]="auto" 
-        (input)="filter(account.value)"
-        (focus)="filter(account.value)"/>
+    <input matInput appTitleCase [formControl]="accountControl" #account type="text" style="height: 10px;"
+        [matAutocomplete]="auto" (input)="filter(account.value)" (focus)="filter(account.value)" />
     <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayUser">
         @for (option of filteredLedger; track option.id) {
         @if(option.ledger_type == 2){
-        <mat-option [value]="option">
-            <div style="width: 235px">{{option.name | titlecase}}&nbsp;<span
-                    style="color: rgb(2, 161, 197); float: right;">
-                    ({{option.group | titlecase}}) </span> </div>
+        <mat-option [value]="option">{{option.name | titlecase}}
+            <div><span style="color: rgb(2, 161, 197);">
+                    ({{option.parent_name | titlecase}}) </span> </div>
         </mat-option>
         }
         }

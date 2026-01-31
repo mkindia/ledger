@@ -13,63 +13,128 @@ import { CompanyComponent } from './screen/company/company/company';
 import { AccountLedger } from './screen/dispaly/account-ledger/account-ledger';
 import { Entry } from './screen/entry/entry/entry';
 import { AccountingTable } from './screen/transaction1/accounting-table';
+import { VoucherDialog } from './component/voucher/voucher-dialog/voucher-dialog';
 
 export const routes: Routes = [
-    {path:'',
+    {
+        path: '',
         component: Home,
-    },     
-    {path:'company',
-        component: CompanyComponent,
+    },   
+    {
+        path: 'das',
+        component: DashboardComponent, canMatch: [matchGuard]
     },
-    {path:'das',
-        component: DashboardComponent, canMatch:[matchGuard]
-    },
-    {path:'userRegistration',
-        component: UserRegistration,
-    },
-    {path:'sale',
-        component: AccountingTable,
-    },
-    {path:'purchase',
-        component: Transation,
-    },
-    {path:'payment',
-        component: Transation,
-    },
-    {path:'receipt',
-        component: Transation,
-    },
-    {path:'edit-receipt',
+    // {
+    //     path: 'userRegistration',
+    //     component: UserRegistration,
+    // },
+   
+    {
+        path: 'edit-receipt',
         component: Entry,
     },
-    {path:'journal',
-        component: Transation, canMatch:[matchGuard]
-    },
-    {path:'contra',
-        component: Transation,
-    },
-    {path:'login',
-        component: Signin,
-    },
-    {path:'create_group',
-        component: Group,
-    },
-    {path:'create_client',     
-        component: Ledger,
-    },
-    {path:'ledger/:id',     
-        component: AccountLedger,
+    {
+        path:'user',
+        children:[
+            {path:'registration',component:UserRegistration},
+            {path:'login',component:Signin},
+        ]
     },
     {
-        path : 'transaction/:id',
-        component: Transation,
-    //     children: [ // <-- Nested routes are defined here
-    //         { path: 'edit_payment', component: Transation },// URL: /parent/child-a
-           
-    // ]
-    },
-    {path:'**',component: Home}
+        path:'company',
+        children:[
+            {path:'create',component: CompanyComponent},            
+        ]
 
+    },
+    {
+        path:'master',
+        children:[
+            {
+                path:'account',
+                children:[
+                    {path:'create', component: Ledger},
+                    {path:'edit', component: Ledger},
+                    {path:'list', component: Ledger}
+                ]
+            },
+            {
+                path:'account_group',
+                children:[
+                    {path:'create', component: Group},
+                    {path:'edit', component: Group},
+                    {path:'list', component: Group}
+                ]
+            },
+        ]
+    },
+    {
+        path: 'transaction',
+        
+        children: [
+            {
+                path:':id',component:Transation
+            },      
+            {
+                path: 'sale',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+            {
+                path: 'purchase',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+            {
+                path: 'receipt',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+            {
+                path: 'payment',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+            {
+                path: 'journal',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+            {
+                path: 'contra',
+                children: [
+                    { path: 'create', component: Transation, },
+                    { path: 'Edit', component: Transation, },
+                    { path: 'List', component: Transation, }
+                ]
+            },
+        ]
+    },
+//    {
+//         path:'transaction/:id', component:Transation
+//    },
+    {
+        path: 'ledger/:id',
+        component: AccountLedger,
+    },
     
+    { path: '**', component: Home }
+
+
 
 ];

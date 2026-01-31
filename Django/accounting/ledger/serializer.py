@@ -17,9 +17,10 @@ class LedgerSerializer(serializers.ModelSerializer):
     # access_code = AccessCodeSerializer(many=True)
     # ledger_entries = TransactionSerializer(many = True)
     # is_pre_defined = serializers.BooleanField(read_only=True)
+    parent_name = serializers.CharField(source="parent.name", read_only=True)
     class Meta:
         model = Ledger
-        fields = ['id', 'group', 'company', 'ledger_type','under', 'name','phone', 'is_pre_defined',]
+        fields = ['id', 'code', 'company', 'ledger_type','parent', 'parent_name', 'name','phone', 'is_pre_defined',]
         read_only_fields = ['id', 'is_pre_defined']
         # write_only_fields = ['is_pre_defined']
         
@@ -31,7 +32,7 @@ class LedgerSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, attrs):
+    def validate(self, attrs:any):
         
         # ledger_nature = attrs.get('ledger_nature')
         # parent_group_code = attrs.get('parent_group')
@@ -48,7 +49,7 @@ class LedgerSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def create(self, validated_data):        
+    def create(self, validated_data:any):   
         # if 'code' not in validated_data or validated_data['code'] is None:
         #     last_id = ledger.objects.aggregate(Max('code'))['code__max']
         #     if last_id < 1000:

@@ -55,16 +55,8 @@ export class CompanyComponent{
   }
   )
 
- 
-
   submit(formValue:any){
-    const decodeToken:userAccessTokenDecode = jwtDecode(this.Token);
-
-    if(this.userService.getToken('access_token')!= null){
-    
-    }
-    
-          
+    const decodeToken:userAccessTokenDecode = jwtDecode(this.Token);          
     const company:company = {
     user_account: decodeToken.user_id,
     company_name :formValue.company_name,
@@ -76,6 +68,7 @@ export class CompanyComponent{
     this.http.post<company>("company/",company).subscribe((value)=>{
       this.userService.getUserCompany();
       this.commonService.snackBar(`Company Creaded Success ${value.company_name}`,'',3000);
+      this.userService.getSelectedCompanyLedger();
       this.router.navigate(["/"]);
     })    
   }

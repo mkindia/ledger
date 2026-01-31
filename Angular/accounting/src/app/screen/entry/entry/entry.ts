@@ -29,7 +29,6 @@ export interface Entry {
 })
 export class Entry {
 
-
   displayedColumns = ['type', 'account', 'amount', 'narration', 'actions'];
   dataSource = new MatTableDataSource<Entry>([]);
   entryForm: FormGroup;

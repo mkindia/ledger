@@ -4,9 +4,12 @@ from django.db import transaction as db_transaction # type: ignore
 
 class TransactionEntrySerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
+    ledger_name = serializers.CharField(source='ledger.name', read_only=True)
+    voucher_type = serializers.CharField(source='transaction.voucher_type', read_only=True)
+    date = serializers.DateField(source='transaction.date', read_only=True)
     class Meta:
         model = TransactionEntry
-        fields = ['id', 'ledger', 'entry_type', 'amount', 'narration']
+        fields = ['id', 'ledger', 'ledger_name', 'voucher_type', 'entry_type', 'amount', 'narration', 'date']
         
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -16,7 +19,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = ['id', 'voucher_no','voucher_type', 'date', 'narration','entries']
 
-    def validate(self, data):
+    def validate(self, data: any):
         # voucher_no = data.get('voucher_no')
         debit_total = sum(e['amount'] for e in data['entries'] if e['entry_type'] == 'debit')
         credit_total = sum(e['amount'] for e in data['entries'] if e['entry_type'] == 'credit')
@@ -27,38 +30,47 @@ class TransactionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Minimum two entries required")
         return data
     
-    def create(self, validated_data):
+    def create(self, validated_data: any):
         entries = validated_data.pop('entries')
         # print(entries)
         with db_transaction.atomic():
             txn = Transaction.objects.create(**validated_data)
-
-            
-
             for entry in entries:
                 TransactionEntry.objects.create(transaction = txn, **entry)
 
         return txn
     
-    def update(self, instance, validated_data):
-        entries = validated_data.pop('entries')
+    def update(self, instance, validated_data:any):
+        entries_data = validated_data.pop('entries', None)
 
         with db_transaction.atomic():
             instance.date = validated_data.get('date', instance.date)
-            instance.narration = validated_data.get('narration', instance.narration)
+            instance.voucher_type = validated_data.get(
+                'voucher_type', instance.voucher_type
+            )
+            instance.narration = validated_data.get(
+                'narration', instance.narration
+            )
             instance.save()
 
-            existing_ids = set(instance.entries.values_list('id', flat=True))
-            incoming_ids = set(e['id'] for e in entries if 'id' in e)
+            # Only touch entries if sent
+            if entries_data is not None:
+                existing_ids = set(
+                    instance.entries.values_list('id', flat=True)
+                )
+                incoming_ids = set(
+                    e['id'] for e in entries_data if 'id' in e
+                )
 
-            # delete removed lines
-            Entry.objects.filter(id__in=existing_ids - incoming_ids).delete()
+                TransactionEntry.objects.filter(id__in=existing_ids - incoming_ids).delete()
 
-            for e in entries:
-                if 'id' in e:
-                    Entry.objects.filter(id=e['id']).update(**e)
-                else:
-                    Entry.objects.create(transaction=instance, **e)
+                for entry in entries_data:
+                    if 'id' in entry:
+                        TransactionEntry.objects.filter(id=entry['id']).update(**entry)
+                    else:
+                        TransactionEntry.objects.create(
+                            transaction=instance, **entry
+                        )
 
         return instance
     
@@ -94,8 +106,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 #     { "id": 101, "ledger": 1, "type": "debit", "amount": 60000 },  // update
 #     { "id": 102, "ledger": 2, "type": "credit", "amount": 30000 }, // unchanged
 #     { "ledger": 4, "type": "credit", "amount": 30000 }            // new
-#   ],
-#   "deleted_entry_ids": [103]
+#   ]
 # }
 
 # BULK DELETE (Multiple Transactions)

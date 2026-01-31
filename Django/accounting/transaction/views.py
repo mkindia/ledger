@@ -3,32 +3,13 @@ from rest_framework.response import Response # type: ignore
 from rest_framework.decorators import action, api_view # type: ignore
 from django.db import transaction as db_transaction # type: ignore
 from .models import Transaction, TransactionEntry
-from .serializer import TransactionSerializer
+from .serializer import TransactionSerializer, TransactionEntrySerializer
 
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.prefetch_related('entries__ledger')
-    serializer_class = TransactionSerializer
-
-    def create (self, request, *arg, **kwargs):
-        serializer= self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception = True)
-        with db_transaction.atomic():
-            try:
-                self.perform_create(serializer)
-            except Exception as e:
-                db_transaction.set_rollback(True)
-                return Response({"error":str(e)},status = status.Http_400_BAD_REQUEST)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers = headers)  
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(modified_by=self.request.user)  
-    
+    serializer_class = TransactionSerializer    
     @action(detail=True, methods=['get'])
-    def entries(self, request, pk=None):
+    def entries(self, request:any, pk=None):
         transaction = self.get_object()
         entries = transaction.entries.select_related('ledger')
         data = [
@@ -44,48 +25,50 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 ]
         return Response(data)
     
-    def update(self, request, *args, **kwargs):
-        """
-        BULK UPDATE:
-        - add new entries
-        - update existing entries
-        - delete removed entries
-        """
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
 
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=partial
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+# parms EntryViewSet
+    #GET /api/entries/?voucher_type=Sales
+    #GET /api/entries/?date=2024-10-01
+    #GET /api/entries/?from_date=2024-10-01&to_date=2024-10-31
+    # GET /api/entries/?voucher_type=Sales&from_date=2026-01-01&to_date=2026-01-31    
 
-        return Response(serializer.data)
+class EntryViewSet(viewsets.ModelViewSet):
+    serializer_class = TransactionEntrySerializer
+    queryset = TransactionEntry.objects.select_related('ledger', 'transaction')
+
+    def get_queryset(self:any):
+        qs = super().get_queryset()
+        print(self.request.query_params.get('voucher_type'))
+        voucher = self.request.query_params.get('voucher_type')
+        date = self.request.query_params.get('date')
+        from_date = self.request.query_params.get('from_date')
+        to_date = self.request.query_params.get('to_date')
+
+        if voucher:
+            qs = qs.filter(transaction__voucher_type=voucher)
+
+        if date:
+            qs = qs.filter(transaction__date=date)
+
+        if from_date and to_date:
+            qs = qs.filter(transaction__date__range=[from_date, to_date])
+
+        return qs.order_by('transaction__date', 'id')
     
-    def destroy(self, request, *args, **kwargs):
-        """
-        Delete single transaction (auto deletes entries)
-        """
-        instance = self.get_object()
-        instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    
+# @api_view(['POST'])
+# def bulk_delete_transactions(request:any):
+#     ids = request.data.get('transaction_ids', [])
+
+#     if not ids:
+#         return Response(
+#             {"error": "No transaction ids provided"},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     Transaction.objects.filter(id__in=ids).delete()
+#     return Response({"status": "deleted"}, status=status.HTTP_200_OK)
     
 
-@api_view(['POST'])
-def bulk_delete_transactions(request):
-    ids = request.data.get('transaction_ids', [])
-
-    if not ids:
-        return Response(
-            {"error": "No transaction ids provided"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    Transaction.objects.filter(id__in=ids).delete()
-    return Response({"status": "deleted"}, status=status.HTTP_200_OK)
-    
-    # def destroy(self, request, *args, **kwargs):
-    #     return Response(
-    #         {"error": "Delete not allowed"},
-    #         status=403
-    #     )

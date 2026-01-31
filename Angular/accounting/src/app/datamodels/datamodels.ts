@@ -1,3 +1,8 @@
+export type voucher_Type = 'sale' | 'purchase' | 'journal' | 'receipt' |'contra' |
+'credit_note' | 'debit_note' |'delivery_note'| 'payment'
+
+export type entry_type = 'debit' | 'credit'
+
 export interface CompanyModel {
   id?: number;
   user?: number;
@@ -8,48 +13,44 @@ export interface CompanyModel {
 }
 
 export interface userAccessTokenDecode {
-  token_type?: string, 
-  exp?: number, 
-  iat?: number, 
-  jti?: string, 
+  token_type?: string,
+  exp?: number,
+  iat?: number,
+  jti?: string,
   user_id?: number,
-  first_name?:string,
-  last_name?:string
+  first_name?: string,
+  last_name?: string
 }
 
 export interface ledger {
-  id?:number,
-  group ?: string,
+  id?: number,
+  code?: string,
   company: number,
-  ledger_type : number,
-  name : string,
-  ledger_alias ?: string,
-  ledger_print_name ?: string,
-  parent_group_code : number
-  is_pre_defined : boolean,
-  is_subgroup: boolean
+  ledger_type: number,
+  name: string,
+  ledger_alias?: string,
+  ledger_print_name?: string, 
+  parent:number | null,
+  parent_name?: string,
+  is_pre_defined?: boolean,
+  is_subgroup?: boolean
 }
 
-export interface entry{
+export interface entry {
+  id?: number,
   ledger: number,
-  entry_type: string,
-  amount:number,
+  entry_type: entry_type,
+  amount: number,
   narration?: string
 }
 
-type transaction_type = 'sales'|'purchase'|'journal'|'recipt'|'contra'
-|'credit_note'|'debit_note'|'delivery_note'|'payment'
-
-type entry_type = 'debit' | 'credit'
-
 export interface transaction {
-  voucher_no : string,
-  voucher_type : string,
+  voucher_no: string,
+  voucher_type: voucher_Type,
   date: string,
   narration: string,
-  entries:entry[]
+  entries: entry[]
 }
-
 
 export interface AccountTransaction {
   id: number;

@@ -19,6 +19,7 @@ import { SelectCompany } from './screen/company/select-company/select-company';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ListOfLedger } from './component/list-of-ledger/list-of-ledger';
 import { KeyboardNavDirective } from "./core/directives/keyboard-nav.directive";
+import { VoucherDialog } from './component/voucher/voucher-dialog/voucher-dialog';
 
 
 
@@ -111,12 +112,24 @@ export class App implements AfterViewInit {
   }
 
  
-  selectCompany() {
-    this.dialog.open(SelectCompany);
-  }
+  // selectCompany() {
+  //   this.dialog.open(SelectCompany);
+  // }
 
-  ledgerDialog(){
-    this.dialog.open(ListOfLedger,{position: { top: '70px' }, });
+  // ledgerDialog(){
+  //   this.dialog.open(ListOfLedger,{position: { top: '70px' }, });
+  // }
+
+  openDialogs(dialog: string): void {
+    if(dialog == 'journal' ){
+      this.dialog.open(VoucherDialog,{position: { top: '70px' }, });
+    }
+    if(dialog == 'account' ){
+      this.dialog.open(ListOfLedger,{position: { top: '70px' }, });
+    }
+    if(dialog == 'company' ){
+      this.dialog.open(SelectCompany,{position: { top: '70px' }, });
+    }
   }
 
   isActiveUrl(path: string): boolean {

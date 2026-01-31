@@ -50,16 +50,18 @@ export class Ledger {
 
 
   subbmit(value: any) {
-    let selected_company = this.userService.selectedCompany().id;
-    let ledger = {
-      company: selected_company,
+
+  //  console.log(value);
+   
+    let ledger: ledger = {
+      company: this.userService.selectedCompany().id!,
       ledger_type: 2,
       name: value.ledger_name,
-      under: value.under_ledger.id,
-      group: value.under_ledger.group
+      parent: value.under_ledger.id,
+      code: value.under_ledger.code
     }
 
-    console.log(ledger);
+    // console.log(ledger);
     this.http.post<ledger>('ledger/', ledger).subscribe((data) => {
       this.userService.getSelectedCompanyLedger();
       this.ledgerForm.reset();

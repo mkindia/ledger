@@ -7,16 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { ledger } from '../../datamodels/datamodels';
 import { HttpService } from '../../services/http-service';
 import { UserService } from '../../services/user-service';
-import { MatAutocompleteModule } from "@angular/material/autocomplete";
-import { MatInput } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { KeyboardNavDirective } from "../../core/directives/keyboard-nav.directive";
 import { AccountList } from '../account/account-list/account-list';
 
 @Component({
   selector: 'app-list-of-ledger',
   imports: [MatDialogModule, MatFormFieldModule,
-    MatButtonModule, MatIconModule, KeyboardNavDirective, AccountList],
+    MatButtonModule, MatIconModule, AccountList],
   templateUrl: './list-of-ledger.html',
   styleUrl: './list-of-ledger.scss',
 })
@@ -35,7 +32,7 @@ export class ListOfLedger {
 
   ngOnInit(){
     this.userService.getSelectedCompanyLedger();
-    // console.log(this.userService.selectedCompanyLedgerList());
+    console.log(this.userService.selectedCompanyLedgerList());
     
   }
 

@@ -24,7 +24,7 @@ class Company(models.Model):
             models.UniqueConstraint(fields=['user_account', 'company_name'], name='unique_company_name_per_user')
         ]
 
-    def clean(self):        
+    def clean(self, *args:any, **kwargs):        
         if Company.objects.filter(user_account=self.user_account, company_name__iexact=self.company_name).exclude(pk=self.pk).exists():                               
                 raise ValidationError({"__all__": "You already have a company with this name."})
 
@@ -33,7 +33,7 @@ class Company(models.Model):
             if qs.exists():
                 raise ValidationError("You can only select one company as active.")   
 
-    def save(self, *args, **kwargs):
+    def save(self, *args:any, **kwargs):
 
         if self.is_selected:
             # Unselect all other companies for this user
@@ -49,7 +49,7 @@ class Company(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.company_name} ( {self.user_account} )"
 
 # class Code(models.IntegerChoices):
@@ -79,7 +79,7 @@ class Company(models.Model):
 #         RESERVES_AND_SURPLUS = 129, "Reserves & Surplus"
 #         MISC_EXPENSES_ASSETS = 132, "Misc. Expenses (Asset)"
 
-class Group(models.TextChoices):
+class Code(models.TextChoices):             
         ASSETS = 'assets', 'Assets'
         INCOME = 'income', 'Income'
         LIABILITIES = 'liabilities', 'Liabilities'
@@ -105,22 +105,24 @@ class Group(models.TextChoices):
         BANK_OD_ACCOUNT = 'bank od a/c', 'Bank Od A/C'
         RESERVES_AND_SURPLUS = 'reserves & surplus', 'Reserves & Surplus'
         MISC_EXPENSES_ASSETS = 'misc. expenses (asset)', 'Misc. Expenses (Asset)'
+        DEPOSITS_ASSETS = 'deposits(assets)', 'Deposits(Assets)'
+        BRANCH_DIVISIONS = 'branch/divisions', 'Branch/Divisions'
 
 class ledger_type_choice(models.IntegerChoices):
         DEFAULT = 0, 'Primary'
-        PRE_DEFINED_ACCOUNTING_LEDGER_GROUP = 1, 'Accounting group ( pre defined )'
-        CREATED_BY_USER_ACCOUNTING_LEDGER = 2, 'Accounting ledger( created by user )'
+        PRE_DEFINED_ACCOUNTING_GROUP = 1, 'Accounting group ( Pre defined )'
+        CREATED_BY_USER_ACCOUNTING = 2, 'Accounting ledger ( Created by user )'
 
 
-class Ledger(models.Model):    
+class Ledger(models.Model):
    
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ledgers')
     ledger_type = models.PositiveSmallIntegerField(choices=ledger_type_choice.choices)
-    group = models.CharField(max_length=50, choices=Group.choices)
+    code = models.CharField(max_length=50, choices=Code.choices, blank=True)
     name = models.CharField(max_length=100, error_messages='Plese Enter Uniqe Name')
     alias = models.CharField(max_length=100, blank=True, null=True)
     print_name = models.CharField(max_length=100, blank=True)   
-    under = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     opening_balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     balance_type = models.CharField(max_length=10, choices=[('debit','debit'),('credit','credit')],default='debit')
     is_pre_defined = models.BooleanField(default=False)    
@@ -145,13 +147,13 @@ class Ledger(models.Model):
         ]
 
             
-    def delete(self, *args, **kwargs):
+    def delete(self, *args:any, **kwargs):
         if self.is_pre_defined:
             raise ValidationError("Cannot delete an is Pre Defined Ledger.")
         return super().delete(*args, **kwargs)
     
     @classmethod
-    def prevent_bulk_delete(cls, queryset):
+    def prevent_bulk_delete(cls, queryset:any):
         # Filter out active objects before deletion
         inactive_queryset = queryset.filter(is_pre_defined=False)
         if queryset.count() != inactive_queryset.count():
@@ -159,5 +161,5 @@ class Ledger(models.Model):
         inactive_queryset.delete()
 
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} ( {self.company.company_name} )"
