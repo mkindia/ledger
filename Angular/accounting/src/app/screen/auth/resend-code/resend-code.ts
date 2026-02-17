@@ -5,8 +5,9 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { CodeVerify } from '../code-verify/code-verify';
-import { HttpService } from '../../../services/http-service';
-import { CommonSrvice } from '../../../services/commonService';
+
+import { CommonSrvice } from '../../../core/services/commonService';
+import { HttpService } from '../../../core/services/http-service';
 
 @Component({
   selector: 'app-resend-code',

@@ -8,18 +8,18 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet, RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { map, shareReplay } from 'rxjs';
-import { Layout } from './services/layout';
+import { Layout } from './core/services/layout';
 import { MatDialog } from '@angular/material/dialog';
 import { Signin } from './screen/auth/signin/signin';
-import { UserService } from './services/user-service';
-import { CommonSrvice } from './services/commonService';
+import { UserService } from './core/services/user-service';
+import { CommonSrvice } from './core/services/commonService';
 import { MatSelectModule } from '@angular/material/select';
-import { HttpService } from './services/http-service';
 import { SelectCompany } from './screen/company/select-company/select-company';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ListOfLedger } from './component/list-of-ledger/list-of-ledger';
 import { KeyboardNavDirective } from "./core/directives/keyboard-nav.directive";
 import { VoucherDialog } from './component/voucher/voucher-dialog/voucher-dialog';
+import { HttpService } from './core/services/http-service';
 
 
 
@@ -54,10 +54,10 @@ export class App implements AfterViewInit {
       this.commonService.setTheme('system');
     }else{
       this.userSrvice.logout();
-      // this.router.navigateByUrl("/");
+      this.router.navigateByUrl("/");
     }
 
-   // console.log('hi');
+  //  console.log('loged out');
     
   }
 
@@ -106,7 +106,7 @@ export class App implements AfterViewInit {
     signInDialog.afterClosed().subscribe(value => {
       if (value.access != undefined && value.refresh != undefined) {
         this.logedIn.set(true);
-        this.userSrvice.getUserCompany();
+        this.userSrvice.getUserCompany();        
       }
     });
   }
@@ -122,13 +122,13 @@ export class App implements AfterViewInit {
 
   openDialogs(dialog: string): void {
     if(dialog == 'journal' ){
-      this.dialog.open(VoucherDialog,{position: { top: '70px' }, });
+      this.dialog.open(VoucherDialog,{position: { top: '70px' }, minWidth:350 });
     }
     if(dialog == 'account' ){
-      this.dialog.open(ListOfLedger,{position: { top: '70px' }, });
+      this.dialog.open(ListOfLedger,{position: { top: '70px' }, minWidth:350 });
     }
     if(dialog == 'company' ){
-      this.dialog.open(SelectCompany,{position: { top: '70px' }, });
+      this.dialog.open(SelectCompany,{position: { top: '70px' }, minWidth:350 });
     }
   }
 

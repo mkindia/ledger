@@ -8,5 +8,6 @@ UserAccount = get_user_model()
 @receiver(post_save, sender=UserAccount)
 def add_user_to_default_group(sender, instance, created, **kwargs):
     if created:
-        default_group, _ = Group.objects.get_or_create(name='default_group')
+        default_group, _ = Group.objects.get_or_create(name='default_group')        
         instance.groups.add(default_group)
+   

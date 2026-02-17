@@ -1,11 +1,11 @@
 <mat-sidenav-container class="sidenav-container">
 
-  <mat-sidenav #drawer="matSidenav" fixedInViewport [attr.role]="(isHandset | async) ? 'dialog' : 'navigation'"
+  <mat-sidenav  #drawer="matSidenav" fixedInViewport [attr.role]="(isHandset | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset | async) ? 'over' : 'side'" [opened]="(isHandset | async) === false && logedIn()">
 
     <mat-toolbar style="justify-content: center;">
-      @if(userSrvice.selectedCompany().company_name != undefined){
-      {{userSrvice.selectedCompany().company_name | titlecase}}
+      @if(userSrvice.selectedCompany().name ){
+      {{userSrvice.selectedCompany().name| titlecase}}
       }@else{
       {{'No Company Found'}}
       }
@@ -36,7 +36,7 @@
                 <div style="width: 180px; margin-left: 70px; text-align: left; ">Set Default Company</div>
               </button>
             </mat-expansion-panel>
-            @if(userSrvice.selectedCompany().company_name != undefined){
+            @if(userSrvice.selectedCompany().name){
             <mat-expansion-panel style="margin-bottom: 1px; border-radius: 0px;">
               <mat-expansion-panel-header style="height: 40px;">
                 <mat-panel-title> Master </mat-panel-title>
@@ -46,24 +46,26 @@
                   <mat-expansion-panel-header style="height: 40px;">
                     <mat-panel-title style="margin-left: 20px;">Account</mat-panel-title>
                   </mat-expansion-panel-header>
-              <button matButton="" routerLink="master/account/create/" [class.activeUrl]="isActiveUrl('/master/account/create')"
-                (click)="SidenavClose()" style="margin-left: -50px; width: 290px; padding-left: 70px;">
-                <div style="width: 180px; margin-left: 70px; text-align: left; "
-                  [class.activeUrlText]="isActiveUrl('/master/account/create')">Create</div>
-              </button>             
-              </mat-expansion-panel>
-               <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
+                  <button matButton="" routerLink="master/account/create/"
+                    [class.activeUrl]="isActiveUrl('/master/account/create')" (click)="SidenavClose()"
+                    style="margin-left: -50px; width: 290px; padding-left: 70px;">
+                    <div style="width: 180px; margin-left: 70px; text-align: left; "
+                      [class.activeUrlText]="isActiveUrl('/master/account/create')">Create</div>
+                  </button>
+                </mat-expansion-panel>
+                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
                   <mat-expansion-panel-header style="height: 40px;">
                     <mat-panel-title style="margin-left: 20px;">Account Group</mat-panel-title>
-                  </mat-expansion-panel-header>             
-              <button matButton="" routerLink="master/account_group/create/" [class.activeUrl]="isActiveUrl('/master/account_group/create')"
-                (click)="SidenavClose()" style="margin-left: -50px; width: 290px; padding-left: 70px;">
-                <div style="width: 180px; margin-left: 70px; text-align: left; "
-                  [class.activeUrlText]="isActiveUrl('/master/account_group/create')">Create</div>
-              </button>
-              </mat-expansion-panel>
+                  </mat-expansion-panel-header>
+                  <button matButton="" routerLink="master/account_group/create/"
+                    [class.activeUrl]="isActiveUrl('/master/account_group/create')" (click)="SidenavClose()"
+                    style="margin-left: -50px; width: 290px; padding-left: 70px;">
+                    <div style="width: 180px; margin-left: 70px; text-align: left; "
+                      [class.activeUrlText]="isActiveUrl('/master/account_group/create')">Create</div>
+                  </button>
+                </mat-expansion-panel>
               </mat-accordion>
-            </mat-expansion-panel>          
+            </mat-expansion-panel>
             <mat-expansion-panel style="margin-bottom: 1px; border-radius: 0px;">
               <mat-expansion-panel-header style="height: 40px;">
                 <mat-panel-title> Dispaly </mat-panel-title>
@@ -87,136 +89,155 @@
               <mat-expansion-panel-header style="height: 40px;">
                 <mat-panel-title> Transactions </mat-panel-title>
               </mat-expansion-panel-header>
-              
               <mat-accordion>
-                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
-                  <mat-expansion-panel-header style="height: 40px;">
-                    <mat-panel-title style="margin-left: 20px;">Journal</mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <button matButton=""routerLink="transaction/journal/create" [class.activeUrl]="isActiveUrl('/transaction/journal/create')" 
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/journal/create')">Create</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/journal/edit" [class.activeUrl]="isActiveUrl('/transaction/journal/edit')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/journal/edit')">Edit</div>
-                  </button>
-                  <button matButton=""  routerLink="transaction/journal/list" [class.activeUrl]="isActiveUrl('/transaction/journal/list')" (click)="openDialogs('journal')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/journal/list')">List</div>
-                  </button>
-                </mat-expansion-panel>
-             
-                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
-                  <mat-expansion-panel-header style="height: 40px;">
-                    <mat-panel-title style="margin-left: 20px;">Payment</mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <button matButton="" routerLink="transaction/payment/create" [class.activeUrl]="isActiveUrl('/transaction/payment/create')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/payment/create')">Create</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/payment/edit" [class.activeUrl]="isActiveUrl('/transaction/payment/edit')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/payment/edit')">Edit</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/payment/list" [class.activeUrl]="isActiveUrl('/transaction/payment/list')" (click)="openDialogs('account')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/payment/list')">List</div>
-                  </button>
-                </mat-expansion-panel>
-             
-                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
-                  <mat-expansion-panel-header style="height: 40px;">
-                    <mat-panel-title style="margin-left: 20px;">Receipt</mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <button matButton="" routerLink="transaction/receipt/create" [class.activeUrl]="isActiveUrl('/transaction/receipt/create')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/create')">Create</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/receipt/edit" [class.activeUrl]="isActiveUrl('/transaction/receipt/edit')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/edit')">Edit</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/receipt/list" [class.activeUrl]="isActiveUrl('/transaction/receipt/list')" (click)="openDialogs('account')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/list')">List</div>
-                  </button>
-                </mat-expansion-panel>
-             
-                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
-                  <mat-expansion-panel-header style="height: 40px;">
-                    <mat-panel-title style="margin-left: 20px;">Contra</mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <button matButton="" routerLink="transaction/contra/create" [class.activeUrl]="isActiveUrl('/transaction/contra/create')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/contra/create')">Create</div>
-                  </button>
-                  <button matButton="" routerLink="transaction/contra/edit" [class.activeUrl]="isActiveUrl('/transaction/contra/edit')" 
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/contra/edit')">Edit</div>
-                  </button>
-                  <button matButton=""  [class.activeUrl]="isActiveUrl('/transaction/contra/list')" (click)="openDialogs('account')"
-                    style="margin-bottom: 3px; margin-left: -40px;">
-                    <div style="width: 160px; text-align: left; margin-left: 70px;"
-                      [class.activeUrlText]="isActiveUrl('/transaction/contra/list')">List</div>
-                  </button>
-                </mat-expansion-panel>
-            
                 <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
                   <mat-expansion-panel-header style="height: 40px;">
                     <mat-panel-title style="margin-left: 20px;">Sales</mat-panel-title>
                   </mat-expansion-panel-header>
-                 <button matButton="" routerLink="transaction/sale/create" [class.activeUrl]="isActiveUrl('/transaction/sale/create')"
-                    (click)="SidenavClose()" style="margin-bottom: 3px; margin-left: -40px;">
+                  <button matButton="" routerLink="transaction/sale/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/sale/create')" (click)="SidenavClose()"
+                    style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/sale/create')">Create</div>
                   </button>
-                  <button matButton="" routerLink="transaction/sale/edit" [class.activeUrl]="isActiveUrl('/transaction/sale/edit')"
+                  <button matButton="" routerLink="transaction/sale/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/sale/edit')"
                     style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/sale/edit')">Edit</div>
                   </button>
-                  <button matButton="" routerLink="transaction/sale/list" [class.activeUrl]="isActiveUrl('/transaction/sale/list')" (click)="openDialogs('account')"
+                  <button matButton="" routerLink="transaction/sale/list"
+                    [class.activeUrl]="isActiveUrl('/transaction/sale/list')" (click)="openDialogs('account')"
                     style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/sale/list')">List</div>
                   </button>
                 </mat-expansion-panel>
-             
+
                 <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
                   <mat-expansion-panel-header style="height: 40px;">
                     <mat-panel-title style="margin-left: 20px;">Purchase</mat-panel-title>
                   </mat-expansion-panel-header>
-                  <button matButton="" routerLink="transaction/purchase/create" [class.activeUrl]="isActiveUrl('/transaction/purchase/create')" 
+                  <button matButton="" routerLink="transaction/purchase/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/purchase/create')"
                     style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/purchase/create')">Create</div>
                   </button>
-                  <button matButton="" routerLink="transaction/purchase/edit" [class.activeUrl]="isActiveUrl('/transaction/purchase/edit')" 
+                  <button matButton="" routerLink="transaction/purchase/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/purchase/edit')"
                     style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/purchase/edit')">Edit</div>
                   </button>
-                  <button matButton="" routerLink="transaction/purchase/list" [class.activeUrl]="isActiveUrl('/transaction/purchase/list')" (click)="openDialogs('account')"
+                  <button matButton="" routerLink="transaction/purchase/list"
+                    [class.activeUrl]="isActiveUrl('/transaction/purchase/list')" (click)="openDialogs('account')"
                     style="margin-bottom: 3px; margin-left: -40px;">
                     <div style="width: 160px; text-align: left; margin-left: 70px;"
                       [class.activeUrlText]="isActiveUrl('/transaction/purchase/list')">List</div>
                   </button>
                 </mat-expansion-panel>
+
+                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
+                  <mat-expansion-panel-header style="height: 40px;">
+                    <mat-panel-title style="margin-left: 20px;">Receipt</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <button matButton="" routerLink="transaction/receipt/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/receipt/create')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/create')">Create</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/receipt/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/receipt/edit')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/edit')">Edit</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/receipt/list"
+                    [class.activeUrl]="isActiveUrl('/transaction/receipt/list')" (click)="openDialogs('account')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/receipt/list')">List</div>
+                  </button>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
+                  <mat-expansion-panel-header style="height: 40px;">
+                    <mat-panel-title style="margin-left: 20px;">Payment</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <button matButton="" routerLink="transaction/payment/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/payment/create')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/payment/create')">Create</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/payment/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/payment/edit')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/payment/edit')">Edit</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/payment/list"
+                    [class.activeUrl]="isActiveUrl('/transaction/payment/list')" (click)="openDialogs('account')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/payment/list')">List</div>
+                  </button>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
+                  <mat-expansion-panel-header style="height: 40px;">
+                    <mat-panel-title style="margin-left: 20px;">Journal</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <button matButton="" routerLink="transaction/journal/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/journal/create')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/journal/create')">Create</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/journal/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/journal/edit')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/journal/edit')">Edit</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/journal/list"
+                    [class.activeUrl]="isActiveUrl('/transaction/journal/list')" (click)="openDialogs('journal')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/journal/list')">List</div>
+                  </button>
+                </mat-expansion-panel>
+
+
+                <mat-expansion-panel style="width: 290px; margin-left: -25px; border-radius: 0px;">
+                  <mat-expansion-panel-header style="height: 40px;">
+                    <mat-panel-title style="margin-left: 20px;">Contra</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <button matButton="" routerLink="transaction/contra/create"
+                    [class.activeUrl]="isActiveUrl('/transaction/contra/create')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/contra/create')">Create</div>
+                  </button>
+                  <button matButton="" routerLink="transaction/contra/edit"
+                    [class.activeUrl]="isActiveUrl('/transaction/contra/edit')"
+                    style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/contra/edit')">Edit</div>
+                  </button>
+                  <button matButton="" [class.activeUrl]="isActiveUrl('/transaction/contra/list')"
+                    (click)="openDialogs('account')" style="margin-bottom: 3px; margin-left: -40px;">
+                    <div style="width: 160px; text-align: left; margin-left: 70px;"
+                      [class.activeUrlText]="isActiveUrl('/transaction/contra/list')">List</div>
+                  </button>
+                </mat-expansion-panel>
+
+
               </mat-accordion>
             </mat-expansion-panel>
-          
+
             }
           </mat-accordion>
 
@@ -276,8 +297,8 @@
       </button>
       }
     </mat-toolbar>
-    <!-- <div style="height: calc(100% - 120px); overflow-y: auto;"> -->
+    <div style="height: calc(100% - 120px); margin-left: 5px; margin-right: 5px;">
     <router-outlet />
-    <!-- </div> -->
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

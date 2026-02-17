@@ -3,55 +3,58 @@ from useraccount.models import UserAccount
 from django.template.defaultfilters import length # type: ignore
 from django.core.exceptions import ValidationError # type: ignore
 from django.db.models import Q # type: ignore
+from company.models import Company
 
-class Company(models.Model):
-    user_account = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name='companies')    
-    company_name = models.CharField(max_length=30)
-    alies = models.CharField(max_length=30, blank=True)
-    print_name = models.CharField(max_length=30, blank=True)
-    is_deleted = models.BooleanField(default=False, help_text='company should be treated as deleted',
-                                     verbose_name='company_deleted')
-    is_selected = models.BooleanField(default=False)
-    created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    created_by = models.ForeignKey(UserAccount, related_name='company_created_by', on_delete=models.SET_NULL, blank=True, null=True)
-    modified_by = models.ForeignKey(UserAccount, related_name='company_modified_by', on_delete=models.SET_NULL, blank=True, null=True)
 
-    class Meta:
-        verbose_name = 'Company ( User Name )'
-        verbose_name_plural = 'Companies'
-        constraints = [
-            models.UniqueConstraint(fields=['user_account', 'company_name'], name='unique_company_name_per_user')
-        ]
+# class Company(models.Model):
+#     user = models.ManyToManyField(UserAccount, related_name='companies')    
+#     name = models.CharField(max_length=30)
+#     alies = models.CharField(max_length=30, blank=True)
+#     print_name = models.CharField(max_length=30, blank=True)
+#     # financial_year_start = models.DateField(blank=True, null=True)
+#     is_deleted = models.BooleanField(default=False, help_text='company should be treated as deleted',
+#                                      verbose_name='company_deleted')
+#     is_selected = models.BooleanField(default=False)
+#     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+#     modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+#     created_by = models.ForeignKey(UserAccount, related_name='company_created_by', on_delete=models.SET_NULL, blank=True, null=True)
+#     modified_by = models.ForeignKey(UserAccount, related_name='company_modified_by', on_delete=models.SET_NULL, blank=True, null=True)
 
-    def clean(self, *args:any, **kwargs):        
-        if Company.objects.filter(user_account=self.user_account, company_name__iexact=self.company_name).exclude(pk=self.pk).exists():                               
-                raise ValidationError({"__all__": "You already have a company with this name."})
+#     class Meta:
+#         verbose_name = 'Company ( User )'
+#         verbose_name_plural = 'Companies'
+#         constraints = [
+#             models.UniqueConstraint(fields=['user', 'name'], name='unique_name_per_user')
+#         ]
 
-        if self.is_selected:
-            qs = Company.objects.filter(user_account=self.user_account, is_selected=True).exclude(pk=self.pk)
-            if qs.exists():
-                raise ValidationError("You can only select one company as active.")   
+#     # def clean(self, *args:any, **kwargs):        
+#     #     if Company.objects.filter(user=self.user, name__iexact=self.name).exclude(pk=self.pk).exists():                               
+#     #             raise ValidationError({"__all__": "You already have a company with this name."})
 
-    def save(self, *args:any, **kwargs):
+#     #     if self.is_selected:
+#     #         qs = Company.objects.filter(user=self.user, is_selected=True).exclude(pk=self.pk)
+#     #         if qs.exists():
+#     #             raise ValidationError("You can only select one company as active.")   
 
-        if self.is_selected:
-            # Unselect all other companies for this user
-            Company.objects.filter(user_account=self.user_account, is_selected=True).update(is_selected=False)
+#     def save(self, *args:any, **kwargs):
+
+#         # if self.is_selected:
+#         #     # Unselect all other companies for this user
+#         #     Company.objects.filter(user=self.user, is_selected=True).update(is_selected=False)
         
-        if length(self.company_name) > 0:
-            self.company_name = self.company_name.lower().strip()
-        if length(self.alies) > 0:
-            self.alies = self.alies.lower().strip()
-        if length(self.print_name) > 0:
-            self.print_name = self.print_name.lower().strip()
+#         if length(self.name) > 0:
+#             self.name = self.name.lower().strip()
+#         if length(self.alies) > 0:
+#             self.alies = self.alies.lower().strip()
+#         if length(self.print_name) > 0:
+#             self.print_name = self.print_name.lower().strip()
 
-        self.full_clean()
-        super().save(*args, **kwargs)
+#         # self.full_clean()
+#         super().save(*args, **kwargs)
 
-    def __str__(self) -> str:
-        return f"{self.company_name} ( {self.user_account} )"
-
+#     def __str__(self) -> str:
+#         return f"{self.name}"
+    
 # class Code(models.IntegerChoices):
 #         ASSETS = 1, 'Assets'
 #         INCOME = 2, 'Income'
@@ -113,7 +116,6 @@ class ledger_type_choice(models.IntegerChoices):
         PRE_DEFINED_ACCOUNTING_GROUP = 1, 'Accounting group ( Pre defined )'
         CREATED_BY_USER_ACCOUNTING = 2, 'Accounting ledger ( Created by user )'
 
-
 class Ledger(models.Model):
    
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='ledgers')
@@ -162,4 +164,4 @@ class Ledger(models.Model):
 
 
     def __str__(self) -> str:
-        return f"{self.name} ( {self.company.company_name} )"
+        return f"{self.name} ( {self.company.name} )"

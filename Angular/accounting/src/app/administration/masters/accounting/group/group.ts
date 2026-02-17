@@ -9,12 +9,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Layout } from '../../../../services/layout';
-import { Focus } from '../../../../services/focus';
-import { HttpService } from '../../../../services/http-service';
+import { Layout } from '../../../../core/services/layout';
+import { Focus } from '../../../../core/services/focus';
 import { ledger } from '../../../../datamodels/datamodels';
-import { UserService } from '../../../../services/user-service';
-import { CommonSrvice } from '../../../../services/commonService';
+import { UserService } from '../../../../core/services/user-service';
+import { CommonSrvice } from '../../../../core/services/commonService';
+import { HttpService } from '../../../../core/services/http-service';
 @Component({
   selector: 'app-group',
   imports: [MatCardModule, MatGridListModule, ReactiveFormsModule, MatButtonModule,
@@ -63,8 +63,8 @@ export class Group {
   allLedger:ledger[]=[];
 
    getLedger(){ 
-    if(this.userService.selectedCompany().id != undefined){
-      this.http.get<ledger[]>('ledger/',{company:this.userService.selectedCompany().id}).subscribe((value)=>{
+    if(this.userService.selectedCompany()?.id != undefined){
+      this.http.get<ledger[]>('ledger/',{company:this.userService.selectedCompany()?.id}).subscribe((value)=>{
         console.log(value);   
         this.allLedger = value;   
       })
@@ -74,7 +74,7 @@ export class Group {
 
     subbmit(value: any) {
     // console.log(value);
-    let selected_company = this.userService.selectedCompany().id;
+    let selected_company = this.userService.selectedCompany()?.id;
     let ledger = {
       company: selected_company,
       ledger_type: 1,

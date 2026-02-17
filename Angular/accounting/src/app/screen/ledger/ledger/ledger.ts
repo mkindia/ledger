@@ -5,16 +5,16 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { Layout } from '../../../services/layout';
-import { Focus } from '../../../services/focus';
+import { Layout } from '../../../core/services/layout';
+import { Focus } from '../../../core/services/focus';
 import { TitleCasePipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
-import { StaticService } from '../../../services/staticservice';
+import { StaticService } from '../../../core/services/staticservice';
 import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from "@angular/forms";
-import { HttpService } from '../../../services/http-service';
-import { UserService } from '../../../services/user-service';
-import { CommonSrvice } from '../../../services/commonService';
+import { UserService } from '../../../core/services/user-service';
+import { CommonSrvice } from '../../../core/services/commonService';
 import { ledger } from '../../../datamodels/datamodels';
+import { HttpService } from '../../../core/services/http-service';
 
 @Component({
   selector: 'app-ledger',
@@ -50,11 +50,9 @@ export class Ledger {
 
 
   subbmit(value: any) {
-
-  //  console.log(value);
-   
+  //  console.log(value);   
     let ledger: ledger = {
-      company: this.userService.selectedCompany().id!,
+      company: this.userService.selectedCompany()?.id!,
       ledger_type: 2,
       name: value.ledger_name,
       parent: value.under_ledger.id,
@@ -65,8 +63,7 @@ export class Ledger {
     this.http.post<ledger>('ledger/', ledger).subscribe((data) => {
       this.userService.getSelectedCompanyLedger();
       this.ledgerForm.reset();
-      this.commonService.snackBar(data.name, '', 4000);
-      console.log(data)
+      this.commonService.snackBar(data.name, '', 4000);      
     }); 
   }
 

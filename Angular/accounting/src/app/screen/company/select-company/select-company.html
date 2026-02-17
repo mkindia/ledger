@@ -4,7 +4,7 @@
     <mat-form-field style="width: calc(100% - 6px)" appearance="outline">
     <mat-select #company [(value)]="selected">
         @for(com of companies; track $index){
-            <mat-option [value]='com.id' >{{com.company_name  | titlecase}}</mat-option>            
+            <mat-option [value]='com.id' >{{com.name| titlecase}}</mat-option>            
             }
     </mat-select>
     </mat-form-field>

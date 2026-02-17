@@ -59,6 +59,20 @@ body {
     container-color: rgb(64, 64, 64),
     // subhead-color: red,
   ));
+   @include mat.card-overrides((
+    elevated-container-color: rgb(37, 37, 37),
+    // elevated-container-elevation: red,
+  ));
+
+  @include mat.expansion-overrides((
+    // actions-divider-color: orange,
+    container-background-color: rgb(37, 37, 37),
+  ));
+
+  mat-sidenav {
+  // background-color: var(--sidenav-bg);
+  background-color: rgb(80, 80, 80);
+}
 }
 
 .light-theme {
@@ -76,18 +90,29 @@ body {
     container-color: rgb(219, 219, 219),
     // subhead-color: red,
   ));
+
+   @include mat.card-overrides((
+    elevated-container-color: rgb(244, 244, 244),
+    // elevated-container-elevation: red,
+  ));
+
+   @include mat.expansion-overrides((
+    // actions-divider-color: orange,
+    container-background-color: rgb(244, 244, 244),
+  ));
+
+   mat-sidenav {
+  // background-color: var(--sidenav-bg);
+  background-color: rgb(232, 232, 232);
+}
 }
 
 :root {
-  // @include mat.all-component-themes($light-theme);
-  //  --sidenav-bg: mat.get-color-from-palette($light-theme.color.bg-color);
-    // --sidenav-bg: mat.get-color-from-palette($light-theme.color.background);
-   
-  // background-color: var(--sidenav-bg);
+ 
   @include mat.sidenav-overrides((
     // container-shape: 30px,
     container-elevation-shadow: 5,
-    container-divider-color:  solid,
+    // container-divider-color:  solid,
     container-width: 290px,
     
       // container-background-color: transparent,
@@ -114,9 +139,7 @@ body {
       
     ));
 
-    @include mat.card-overrides((
-    // elevated-container-color: rgba(125, 125, 125, 0.127),   
-  ));
+   
 
     @include mat.form-field-overrides((
     // container-height : 20px,
@@ -128,12 +151,13 @@ body {
     
   ));
 
+  
+
 
  }
 
-// mat-sidenav {
-//   background-color: var(--sidenav-bg);
-// }
+
+
 // mat-form-field {
 //   padding-right: 3px;
 //   padding-left: 3px;
@@ -154,15 +178,15 @@ body {
 }
 
 mat-card {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 mat-card-header {
   margin-bottom: 15px;
 }
 
-mat-form-field {
+mat-form-field {  
   width: 100%;
 }
 

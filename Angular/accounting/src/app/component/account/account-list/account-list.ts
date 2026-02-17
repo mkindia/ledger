@@ -6,7 +6,7 @@ import { TitleCasePipe } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Decorator } from '../../../core/services/decorators/decorator';
+import { Decorator } from '../../../core/decorators/decorator';
 
 @Component({
   selector: 'app-account-list',

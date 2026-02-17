@@ -4,9 +4,10 @@ import { AccountTransaction, ledger } from '../../../datamodels/datamodels';
 import { MatRow, MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatRippleModule } from '@angular/material/core';
 import { DatePipe, DecimalPipe, TitleCasePipe, NgClass } from '@angular/common';
-import { HttpService } from '../../../services/http-service';
 import { MatCardModule } from "@angular/material/card";
 import { KeyboardNavDirective } from "../../../core/directives/keyboard-nav.directive";
+import { Voucher } from '../../../core/services/voucher_services/voucher';
+import { HttpService } from '../../../core/services/http-service';
 
 
 @Pipe({ name: 'abs', standalone: true })
@@ -22,8 +23,7 @@ export class AbsPipe implements PipeTransform {
   templateUrl: './account-ledger.html',
   styleUrl: './account-ledger.scss',
 })
-export class AccountLedger {
-
+export class AccountLedger { 
   displayedColumns = [
     'date',
     'voucherType',
@@ -41,22 +41,20 @@ export class AccountLedger {
   TotalDebit: number = 0;
   TotalCredit: number = 0;
 
-  constructor(private router: Router, private http: HttpService) {
-    this.http.get<ledger>(this.router.url + '/').subscribe(value => {
-      console.log(value);
+  constructor(private router: Router, private http: HttpService, private voucherService: Voucher) {
+    this.http.get<ledger>(this.router.url + '/').subscribe(value => {     
       this.Account_name = value.name.toUpperCase();
     })
 
     this.http.get<AccountTransaction[]>(this.router.url + '/entries/').subscribe((value1: AccountTransaction[]) => {
       let balance = 0;
       this.dataSource.data = value1.map(tx => {
-        this.TotalDebit += tx.entry_type === 'debit' ? tx.amount : 0;
-        this.TotalCredit += tx.entry_type === 'credit' ? tx.amount : 0;
-        balance += tx.entry_type === 'debit' ? tx.amount : -tx.amount;
+        this.TotalDebit += tx.debit > 0 ? tx.debit : 0;
+        this.TotalCredit += tx.credit > 0 ? tx.credit : 0;
+        balance += tx.debit > 0 ? tx.debit : -tx.credit;
         return { ...tx, balance };       
 
-      });
-      
+      });     
     })
   }
 
@@ -115,7 +113,7 @@ export class AccountLedger {
   }
 
   selectRow(index: number) {
-    console.log('Selected row:', this.dataSource.data[index]);
+    this.voucherService.selectedVoucher_code.set({ code:this.dataSource.data[index].voucher_type, name:this.dataSource.data[index].voucher_type})
     this.router.navigate([`transaction/${this.dataSource.data[index].transaction}`])
   }
 

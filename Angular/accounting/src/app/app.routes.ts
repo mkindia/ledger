@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard/dashboard.component';
+
 // import { TransationComponent } from './transation/transation.component';
 
 import { UserRegistration } from './screen/auth/user-registration/user-registration';
@@ -12,18 +12,14 @@ import { Ledger } from './screen/ledger/ledger/ledger';
 import { CompanyComponent } from './screen/company/company/company';
 import { AccountLedger } from './screen/dispaly/account-ledger/account-ledger';
 import { Entry } from './screen/entry/entry/entry';
-import { AccountingTable } from './screen/transaction1/accounting-table';
-import { VoucherDialog } from './component/voucher/voucher-dialog/voucher-dialog';
+
 
 export const routes: Routes = [
     {
         path: '',
         component: Home,
     },   
-    {
-        path: 'das',
-        component: DashboardComponent, canMatch: [matchGuard]
-    },
+    
     // {
     //     path: 'userRegistration',
     //     component: UserRegistration,

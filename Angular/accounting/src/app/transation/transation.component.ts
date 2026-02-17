@@ -5,16 +5,16 @@ import { MatSortModule, MatSort } from '@angular/material/sort';
 import { TransationDataSource, TransationItem } from './transation-datasource';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
-import { Layout } from '../services/layout';
+import { Layout } from '../core/services/layout';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpService } from '../services/http-service';
-import { UserService } from '../services/user-service';
+import { UserService } from '../core/services/user-service';
 
 import { CompanyModel } from '../datamodels/datamodels';
 import { Drcr } from '../component/drcr/drcr';
 import { MatInput } from "@angular/material/input";
+import { HttpService } from '../core/services/http-service';
 
 
 @Component({

@@ -1,6 +1,7 @@
-// .transaction-table {
-//   width: 100%;
-// }
+.transaction-table {
+  width: 100%;
+  overflow-x: auto;
+}
 
 .right {
   text-align: right;

@@ -1,11 +1,10 @@
 import { Directive, HostListener } from "@angular/core";
-import { take } from "rxjs";
 
 @Directive({
     selector:'[appKeyboardNav]'
 })
 export class KeyboardNavDirective{
-    @HostListener('keydown', ['$event'])
+    @HostListener('window:keydown', ['$event'])
     handleKeydown(event: KeyboardEvent){
         const target = event.target;
 

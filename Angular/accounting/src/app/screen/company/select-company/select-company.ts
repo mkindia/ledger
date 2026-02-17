@@ -2,14 +2,14 @@ import { Component, inject, viewChild, ViewChild, viewChildren } from '@angular/
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { HttpService } from '../../../services/http-service';
 import { CompanyModel } from '../../../datamodels/datamodels';
-import { UserService } from '../../../services/user-service';
+import { UserService } from '../../../core/services/user-service';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { TitleCasePipe } from '@angular/common';
 import { MatColumnDef } from "@angular/material/table";
 import { Router } from '@angular/router';
+import { HttpService } from '../../../core/services/http-service';
 
 
 @Component({
@@ -32,7 +32,7 @@ export class SelectCompany {
   ngOnInit() {
     // this.getCompany();
     this.companies = this.userService.userCompanies();
-    this.selected = this.userService.selectedCompany().id ?? null;
+    this.selected = this.userService.selectedCompany()?.id ?? null;
   }
 
   
@@ -44,7 +44,11 @@ export class SelectCompany {
   }
 
   setCompany(selectedCompany: number) {
-    this.http.patch<SelectCompany>(`company/${selectedCompany}/`, {'is_selected': true}).subscribe((value:SelectCompany)=>{      
+    console.log(selectedCompany);
+     (selectedCompany)
+    this.http.post(`company/${selectedCompany}/set_default/`,{}).subscribe((value)=>{
+      console.log(value);
+         
       this.userService.getUserCompany();
       this.route.navigate(["/"]);
       this.selectCompanyDialogref.close();

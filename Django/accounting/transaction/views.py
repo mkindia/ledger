@@ -1,13 +1,19 @@
 from rest_framework import viewsets, status # type: ignore
 from rest_framework.response import Response # type: ignore
 from rest_framework.decorators import action, api_view # type: ignore
-from django.db import transaction as db_transaction # type: ignore
-from .models import Transaction, TransactionEntry
-from .serializer import TransactionSerializer, TransactionEntrySerializer
+# from django.db import transaction as db_transaction # type: ignore
+from .models import Transaction, Entry, VoucherType
+from .serializer import TransactionSerializer, EntrySerializer, VoucherTypeSerializer
+
+class VoucherTypeVieSet(viewsets.ModelViewSet):
+    queryset = VoucherType.objects.all()
+    serializer_class = VoucherTypeSerializer
+
 
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.prefetch_related('entries__ledger')
-    serializer_class = TransactionSerializer    
+    serializer_class = TransactionSerializer
+    
     @action(detail=True, methods=['get'])
     def entries(self, request:any, pk=None):
         transaction = self.get_object()
@@ -15,11 +21,11 @@ class TransactionViewSet(viewsets.ModelViewSet):
         data = [
             {
                 # "transaction" : e.transaction.id,
-                "voucher_type" : e.transaction.voucher_type,
+                # "voucher_type" : e.transaction.voucher_type,
                 "date" : e.transaction.date,
                 "ledger": e.ledger.name,
-                "entry_type" : e.entry_type,
-                "amount": e.amount
+                "debit" : e.debit,
+                "credit": e.credit
                 }
                 for e in entries
                 ]
@@ -33,8 +39,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
     # GET /api/entries/?voucher_type=Sales&from_date=2026-01-01&to_date=2026-01-31    
 
 class EntryViewSet(viewsets.ModelViewSet):
-    serializer_class = TransactionEntrySerializer
-    queryset = TransactionEntry.objects.select_related('ledger', 'transaction')
+    serializer_class = EntrySerializer
+    queryset = Entry.objects.select_related('ledger', 'transaction')
 
     def get_queryset(self:any):
         qs = super().get_queryset()

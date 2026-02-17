@@ -3,8 +3,9 @@ from django.urls import path, include # type: ignore
 from django.contrib.admin import AdminSite  # type: ignore
 # from account.views import (CompanyView)
 from useraccount.views import (CustomTokenObtainPairView, UserAccountView)
-from ledger.views import (CompanyView, LedgerView, )
-from transaction.views import TransactionViewSet, EntryViewSet
+from ledger.views import LedgerView
+from company.views import CompanyView
+from transaction.views import TransactionViewSet, EntryViewSet, VoucherTypeVieSet
 from rest_framework.routers import DefaultRouter # type: ignore
 from rest_framework_simplejwt.views import TokenRefreshView # type: ignore
 
@@ -20,6 +21,7 @@ router.register("user", UserAccountView, basename="user")
 router.register("ledger", LedgerView, basename="ledger")
 router.register("transaction", TransactionViewSet, basename="transaction")
 router.register('entries', EntryViewSet, basename='entries')
+router.register('voucher_type', VoucherTypeVieSet, basename='voucher_type')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

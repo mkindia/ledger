@@ -150,8 +150,7 @@
     </div>
 
     <div class="action-buttons">
-    <button 
-      mat-raised-button 
+    <button  mat-raised-button 
       color="primary" 
       (click)="submit()"
       [disabled]="!entryForm.valid || selectedDate == undefined  || getTotals().totalDebit !== getTotals().totalCredit"
@@ -161,25 +160,4 @@
     </button>
 </div>
    </mat-card>
-  <!-- Summary Section -->
   
-   
-    <!-- <div class="summary-row" [class.balanced]="isBalanced()" [class.unbalanced]="!isBalanced()">
-      <span class="summary-label">Difference:</span>
-      <span class="summary-value">{{ getDifference() | number:'1.2-2' }}</span>
-    </div>
-    <div class="balance-status" [class.balanced]="isBalanced()" [class.unbalanced]="!isBalanced()">
-      <mat-icon>{{ isBalanced() ? 'check_circle' : 'error' }}</mat-icon>
-      <span>{{ isBalanced() ? 'Balanced' : 'Not Balanced' }}</span>
-    </div> -->
-  
-
-  <!-- Action Buttons -->
-
-    <!-- <button mat-raised-button (click)="clearAll()" color="warn">
-      <mat-icon>clear</mat-icon>
-      Clear All
-    </button> -->
-   
-  <!-- </div>
-  </mat-card> -->

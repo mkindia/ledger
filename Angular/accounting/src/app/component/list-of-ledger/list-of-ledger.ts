@@ -5,10 +5,10 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { ledger } from '../../datamodels/datamodels';
-import { HttpService } from '../../services/http-service';
-import { UserService } from '../../services/user-service';
+import { UserService } from '../../core/services/user-service';
 import { Router } from '@angular/router';
 import { AccountList } from '../account/account-list/account-list';
+
 
 @Component({
   selector: 'app-list-of-ledger',
@@ -22,7 +22,7 @@ export class ListOfLedger {
 
   @ViewChild(AccountList) accountAutocomplete!: AccountList;
 
-  constructor(private http: HttpService, public userService: UserService, private router: Router) {
+  constructor(public userService: UserService, private router: Router) {
     this.dialogRef.disableClose = true;
   }
 
@@ -31,9 +31,7 @@ export class ListOfLedger {
   selectedAccountValue = "";
 
   ngOnInit(){
-    this.userService.getSelectedCompanyLedger();
-    console.log(this.userService.selectedCompanyLedgerList());
-    
+    this.userService.getSelectedCompanyLedger();   
   }
 
 

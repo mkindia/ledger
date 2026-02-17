@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { inject } from '@angular/core';
-import { CommonSrvice } from '../services/commonService';
+import { CommonSrvice } from '../core/services/commonService';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     let commonService = inject(CommonSrvice);

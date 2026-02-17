@@ -1,12 +1,18 @@
-export type voucher_Type = 'sale' | 'purchase' | 'journal' | 'receipt' |'contra' |
-'credit_note' | 'debit_note' |'delivery_note'| 'payment'
+// export type voucher_Type = 'sale' | 'purchase' | 'journal' | 'receipt' |'contra' |
+// 'credit_note' | 'debit_note' |'delivery_note'| 'payment'
 
 export type entry_type = 'debit' | 'credit'
+
+export interface VoucherType {
+  id?:number,
+  code:string,
+  name:string
+}
 
 export interface CompanyModel {
   id?: number;
   user?: number;
-  company_name?: string;
+  name?: string;
   alias?: string;
   printName?: string;
   is_selected?: boolean;
@@ -39,14 +45,16 @@ export interface ledger {
 export interface entry {
   id?: number,
   ledger: number,
-  entry_type: entry_type,
-  amount: number,
+  debit: number,
+  credit:number,
   narration?: string
 }
 
 export interface transaction {
-  voucher_no: string,
-  voucher_type: voucher_Type,
+  company:number,
+  voucher_no?: string,
+  voucher_type: number,
+  voucher_name?: string,
   date: string,
   narration: string,
   entries: entry[]
@@ -59,7 +67,9 @@ export interface AccountTransaction {
   voucherNo: string;
   account: string;
   amount: number;
-  entry_type: 'debit' | 'credit';
+  // entry_type: 'debit' | 'credit';
+  debit:number,
+  credit:number,
   narration?: string;
   balance?: number;
 }

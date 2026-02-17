@@ -3,11 +3,10 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { HttpService } from '../../../services/http-service';
-import { ResendCode } from '../resend-code/resend-code';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { CommonSrvice } from '../../../services/commonService';
+import { CommonSrvice } from '../../../core/services/commonService';
 import { Router } from '@angular/router';
+import { HttpService } from '../../../core/services/http-service';
 
 @Component({
   selector: 'app-code-verify',

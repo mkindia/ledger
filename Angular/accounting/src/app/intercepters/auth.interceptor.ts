@@ -1,8 +1,8 @@
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { UserService } from '../services/user-service';
+import { UserService } from '../core/services/user-service';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { CommonSrvice } from '../services/commonService';
+import { CommonSrvice } from '../core/services/commonService';
 import { environment } from '../../environments/environment.development';
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
   let userService = inject(UserService);
@@ -53,12 +53,8 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: 
             error_name = error.error[err][0];
           }
         }
-        if (error_name != undefined) { 
-          if(error_name === "The fields user_account, company_name must make a unique set."){
-            commonService.snackBar('The company name already exists', '', 5000);
-          }else{
-            commonService.snackBar(error_name, '', 4000);
-          }         
+        if (error_name != undefined) {          
+            commonService.snackBar(error_name, 'Ok', 4000);             
         }
         else { 
           if(error.error == 'TypeError: Failed to fetch'){

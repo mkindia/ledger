@@ -1,26 +1,26 @@
-import { Component, ElementRef, AfterViewInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, ViewChildren, QueryList, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from "@angular/material/card";
-import { Focus } from '../../services/focus';
+import { Focus } from '../../core/services/focus';
 import { MatDatepickerInputEvent, MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
-import { Layout, TitleCaseDirective } from '../../services/layout';
+import { Layout, TitleCaseDirective } from '../../core/services/layout';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
-import { HttpService } from '../../services/http-service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { entry, ledger, transaction, voucher_Type } from '../../datamodels/datamodels';
-import { UserService } from '../../services/user-service';
+import { entry, ledger, transaction, VoucherType } from '../../datamodels/datamodels';
+import { UserService } from '../../core/services/user-service';
 import { DatePipe, TitleCasePipe, NgClass } from '@angular/common';
-import { CommonSrvice } from '../../services/commonService';
+import { CommonSrvice } from '../../core/services/commonService';
 import { Router } from '@angular/router';
-import { Decorator } from '../../core/services/decorators/decorator';
+import { Decorator } from '../../core/decorators/decorator';
 import { MatTableModule } from "@angular/material/table";
-import { last } from 'rxjs';
+import { Voucher } from '../../core/services/voucher_services/voucher';
+import { HttpService } from '../../core/services/http-service';
 
 
 @Component({
@@ -42,11 +42,10 @@ export class Transation implements AfterViewInit {
   readonly maxDate = new Date(this._currentYear + 1, 11, 31);
 
   dateControl = new FormControl(new Date());
-  voucher_type: voucher_Type = 'journal';
-  Voucher_label: string = '';
-
-  selectedDate: string = '';
-
+  voucher_type: VoucherType[] = [];
+  voucher_id: number = 0;
+  voucher_code:VoucherType | null = null;  
+  Voucher_label: string = ''; selectedDate: string = '';
   entryForm: FormGroup;
   @ViewChildren('account') account!: QueryList<ElementRef>;
 
@@ -62,8 +61,10 @@ export class Transation implements AfterViewInit {
     private commonService: CommonSrvice,
     public router: Router,
     private datePipe: DatePipe,
-    private decorater: Decorator
-  ) {
+    private decorater: Decorator,
+    private voucherService: Voucher
+    ) 
+    {
 
     layout.appLayOut.set({
       XSmall: { colspan_1: 2, colspan_2: 3, colspan_3: 3, colspan_4: 4, colspan_5: 0, colspan_6: 0, rowspan_1: 1 },
@@ -81,11 +82,7 @@ export class Transation implements AfterViewInit {
       voucher_Type: new FormControl(),
       entries: this.fb.array([])  // start with empty array
     });
-    this.addEntry('debit');
-
-    //  this.getLedger();
-
-  }
+    this.addEntry('debit');}
 
   voucherDate: Date = new Date;
 
@@ -98,24 +95,28 @@ export class Transation implements AfterViewInit {
       this.selectedDate = '';
     }
 
-    // console.log(this.selectedDate, event.value);
 
   }
 
 
-  filteredLedger: ledger[] = [];  
-  ngOnInit() {
-    this.voucher_type = this.router.url.split('/')[2] as voucher_Type;
-    this.Voucher_label = 'Create ' + this.router.url.split('/')[2]+ ' Voucher';
+  filteredLedger: ledger[] = [];
+  ngOnInit() {   
+    this.Voucher_label = 'Create ' + this.router.url.split('/')[2] + ' Voucher';
     this.entryForm.markAllAsTouched();
-
-    console.log(this.voucher_type, this.Voucher_label);
+    this.transactionId = this.toNumberUsingNumber(this.router.url.substring(1).split('/')[1]);
     
   }
-  ngAfterViewInit() {
+  ngAfterViewInit() {    
     setTimeout(() => {
-      this.editLedger();
-    }, 200);
+      this.getVouchers();
+      if (this.transactionId != null) {
+        this.editLedger();
+        this.voucher_code = this.voucherService.selectedVoucher_code();
+      }else{
+        this.voucher_code = {code:this.router.url.substring(1).split('/')[1].toLowerCase(), name:this.router.url.substring(1).split('/')[1].toLowerCase()}
+      }
+      
+    }, 700);
   }
 
 
@@ -159,40 +160,51 @@ export class Transation implements AfterViewInit {
     this.entries.push(item);
   }
 
+  toNumberUsingNumber(str: string): number | null {
+    const num = Number(str);
+    return isNaN(num) ? null : num; // Return null if conversion fails
+  }
+
   // originalEntries: entry[] = [];
   transactionId: number | null = null;
-  editLedger() {
-    let sp = this.router.url.substring(1).split('/')[1];
-    // console.log(this.router.url.substring(1).split('/')[1]);
-    if (this.router.url.substring(1).split('/')[1] != undefined) {
-      this.transactionId = parseInt(sp);
-    } else {
-      // this.Voucher_label = 'Add ' + this.router.url.substring(3) + ' Voucher';
-    }
-
-    if (this.router.url.substring(1) == `transaction/${sp}`) {
-      this.http.get<transaction>(`${this.router.url.substring(1)}/`).subscribe((value1: transaction) => {
-        // console.log(value1);
+  editLedger() {   
+    if (this.transactionId != null) {
+      this.http.get<transaction>(`${this.router.url.substring(1)}/`).subscribe((value1: transaction) => {             
         this.dateControl.setValue(new Date(value1.date))
-        this.voucher_type = value1.voucher_type as voucher_Type;
-        this.Voucher_label = 'edit ' + value1.voucher_type + ' Voucher';
+        // this.voucher_type = value1.voucher_type as voucher_Type;
+        this.Voucher_label = 'edit ' + value1.voucher_name + ' Voucher';
         this.entries.clear();
         for (let a in value1.entries) {
           let LedgerV = this.userService.selectedCompanyLedgerList().filter(o => o.id == value1.entries[a].ledger);
+          let amount = 0;
+          let entry_type: 'debit' | 'credit' = 'credit';
+          if (value1.entries[a].debit != 0) {
+            entry_type = 'debit';
+            amount = value1.entries[a].debit;
+          } else {
+            entry_type = 'credit';
+            amount = value1.entries[a].credit;
+          }
+
           let tt = this.fb.group({
             id: [value1.entries[a].id],
             ledger: LedgerV,
-            entry_type: value1.entries[a].entry_type,
-            amount: value1.entries[a].amount,
+            entry_type: entry_type,
+            amount: amount,
             narration: value1.entries[a].narration,
           })
 
           this.entries.push(tt);
-          // this.originalEntries.push(value1.entries[a]);
+          //  this.originalEntries.push(value1.entries[a]);
         }
       })
-    }
+    } 
+  }
 
+  getVouchers() {
+    this.http.get<VoucherType[]>('voucher_type/').subscribe((valuse: VoucherType[]) => {
+      this.voucher_type = valuse.filter(v => v.code == this.voucher_code?.code);
+    })
   }
 
   displayFn = (account: ledger): string => {
@@ -207,44 +219,45 @@ export class Transation implements AfterViewInit {
     this.selectedAccount1 = this.filteredLedger[0].id
   }
 
-  filter(index: number, value: string) {
+  filter(index: number, value: string) {   
+    let voucher_code: string | undefined = this.voucher_code?.code;
+        
     const filterValue = value.toLowerCase();
     const entry = this.entries.at(index);
     const entry_type = entry.get('entry_type')?.value
-
-    if (this.voucher_type.toLowerCase() == 'payment' && entry_type != 'debit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
+    if (voucher_code != undefined) {
+      if (voucher_code == 'payment' && entry_type != 'debit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
+      }
+      else if (voucher_code == 'payment' && entry_type != 'credit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
+      }
+      else if (voucher_code == 'receipt' && entry_type != 'credit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
+      }
+      else if (voucher_code == 'receipt' && entry_type != 'debit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
+      }
+      else if (voucher_code == 'sale' && entry_type != 'debit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sales accounts');
+      }
+      else if (voucher_code == 'sale' && entry_type != 'credit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
+      }
+      else if (voucher_code == 'purchase' && entry_type == 'debit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'purchase accounts');
+      }
+      else if (voucher_code == 'purchase' && entry_type == 'credit') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
+      }
+      else if (voucher_code == 'journal') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue));
+      }
+      else if (voucher_code == 'contra') {
+        this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
+      }
     }
-    else if (this.voucher_type.toLowerCase() == 'payment' && entry_type != 'credit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
-    }
-    else if (this.voucher_type.toLowerCase() == 'receipt' && entry_type != 'credit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
-    }
-    else if (this.voucher_type.toLowerCase() == 'receipt' && entry_type != 'debit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
-    }
-    else if (this.voucher_type.toLowerCase() == 'sale' && entry_type != 'debit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sales accounts');
-    }
-    else if (this.voucher_type.toLowerCase() == 'sale' && entry_type != 'credit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
-    }
-    else if (this.voucher_type.toLowerCase() == 'purchase' && entry_type == 'debit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'purchase accounts');
-    }
-    else if (this.voucher_type.toLowerCase() == 'purchase' && entry_type == 'credit') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry debtors' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'sundry creditors');
-    }
-    else if (this.voucher_type.toLowerCase() == 'journal') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue));
-    }
-    else if (this.voucher_type.toLowerCase() == 'contra') {
-      this.filteredLedger = this.userService.selectedCompanyLedgerList().filter(o => o.name.toLowerCase().includes(filterValue) && o.parent_name == 'bank accounts' || o.name.toLowerCase().includes(filterValue) && o.parent_name == 'cash-in-hand');
-    }
-
-    // console.log(this.filteredLedger);
-
+   
   }
 
   // Remove field
@@ -253,8 +266,7 @@ export class Transation implements AfterViewInit {
     if (index !== -1) {
       this.entries.removeAt(index);
     }
-    console.log(index);
-
+   
   }
 
   getTotals() {
@@ -274,48 +286,32 @@ export class Transation implements AfterViewInit {
     return { totalDebit, totalCredit };
   }
 
-  checkBalanceAndAdd(index:any) {
+  checkBalanceAndAdd(index: any) {
     const { totalDebit, totalCredit } = this.getTotals();
     const lastEntry = this.entries.at(this.entries.length - 1);
-    const Entry_rosw = this.entries.at(this.entries.length-1)    
-    console.log(this.entries.length, index);
-    
-    
+    const Entry_rosw = this.entries.at(this.entries.length - 1)
     let lastDebit = 0;
     let lastCredit = 0;
     const dc = lastEntry.get('entry_type')?.value
     if (dc == 'debit') {
-      lastDebit = parseFloat(lastEntry.get('amount')?.value);
-      // console.log(lastDebit);
+      lastDebit = parseFloat(lastEntry.get('amount')?.value);    
     } else {
-      lastCredit = parseFloat(lastEntry.get('amount')?.value);
-      // console.log(lastCredit);
-    }
-
-    // 🔒 do nothing if last entry is empty or 0
-    // if ((isNaN(lastDebit) || lastDebit <= 0) && (isNaN(lastCredit) || lastCredit <= 0)) {
-    //   console.log('Last entry is empty or zero, not adding balancing entry.');
-    //   // return;
-    // }else{
-    //   console.log('Last entry has value, proceeding to check balance.');
-    // }
-
-    // add balancing entry only when totals mismatch
+      lastCredit = parseFloat(lastEntry.get('amount')?.value);     
+    }    
     if (totalDebit > totalCredit) {
       const diff = totalDebit - totalCredit;
       if (diff > 0) {
-       if(index == this.entries.length -1){
-        this.addEntry('credit', diff);
-      }
-        this.entryForm.markAllAsTouched();
-       
-        
+        if (index == this.entries.length - 1) {
+          this.addEntry('credit', diff);
+        }
+        this.entryForm.markAllAsTouched();       
       }
     } else if (totalCredit > totalDebit) {
       const diff = totalCredit - totalDebit;
       if (diff > 0) {
-       if(index == this.entries.length -1){
-        this.addEntry('debit', diff);}
+        if (index == this.entries.length - 1) {
+          this.addEntry('debit', diff);
+        }
         this.entryForm.markAllAsTouched();
       }
     }
@@ -329,8 +325,7 @@ export class Transation implements AfterViewInit {
   submit() {
     this.selectedDate = this.datePipe.transform(this.dateControl.value, 'yyyy-MM-dd') || '';
     const { totalDebit, totalCredit } = this.getTotals();
-    if (totalDebit !== totalCredit) {
-      console.log('Not balanced, fixing...');
+    if (totalDebit !== totalCredit) {      
       this.checkBalanceAndAdd('');
       return;
     }
@@ -340,30 +335,45 @@ export class Transation implements AfterViewInit {
       let currentEntries: entry[] = [];
       this.entryForm.value.entries.forEach((element: any) => {
         let id;
+        let debit = 0, credit = 0;
+        if (element.entry_type == 'debit') {
+          debit = element.amount;
+          credit = 0;
+        }
+        if (element.entry_type == 'credit') {
+          credit = element.amount;
+          debit = 0;
+        }
         if (element.id && typeof element.id !== 'string') {
           id = element.id;
         }
 
         entries.push({
           ledger: element.ledger.id,
-          entry_type: element.entry_type,
-          amount: element.amount,
+          credit: credit,
+          debit: debit,
           narration: element.narration
         })
+
+
 
         currentEntries.push({
           id: id,
           ledger: element.ledger.id,
-          entry_type: element.entry_type,
-          amount: element.amount,
+          debit: debit,
+          credit: credit,
           narration: element.narration
         })
       });
-
      
+      if (this.voucher_type[0].id != undefined) {
+        this.voucher_id = this.voucher_type[0].id
+      }
+
       let data1: transaction = {
-        "voucher_no": "pay001",
-        "voucher_type": this.voucher_type,
+        //"voucher_no": "pay001",
+        'company': this.userService.selectedCompany_id(),
+        "voucher_type": this.voucher_id,
         "date": this.selectedDate,
         "narration": "fromrow",
         "entries": entries
@@ -372,8 +382,9 @@ export class Transation implements AfterViewInit {
       }
 
       const payload = {
+        'company': this.userService.selectedCompany_id(),
         "date": this.selectedDate,
-        "voucher_type": this.voucher_type,
+        "voucher_type": this.voucher_id,
         "entries": currentEntries,
         "narration": "fromrow",
       };
@@ -395,10 +406,7 @@ export class Transation implements AfterViewInit {
         }
       }
 
-    }
-    else {
-      console.log('Form Invalid');
-    }
+    }   
   }
 
   private inputArray: HTMLInputElement[] = [];
@@ -407,18 +415,9 @@ export class Transation implements AfterViewInit {
     const prevInput = this.inputArray[index - 1];
     if (!prevInput) return;
     // if previous is empty, focus it
-    if (!prevInput.value || prevInput.value.trim() === '') {
-      console.log(!prevInput.value);
+    if (!prevInput.value || prevInput.value.trim() === '') {     
       prevInput.focus();
     }
   }
-}
 
-
-export interface AccountingEntry {
-  id: number;
-  type: 'Dr' | 'Cr';
-  account: string;
-  amount: number;
-  narration: string;
 }

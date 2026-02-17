@@ -1,22 +1,18 @@
 from rest_framework import serializers  # type: ignore
-from .models import Company, Ledger
+from .models import Ledger
 from rest_framework.validators import UniqueTogetherValidator # type: ignore
 from django.db.models import Max # type: ignore
-from transaction.serializer import TransactionEntrySerializer, TransactionSerializer
+# from transaction.serializer import EntrySerializer, TransactionSerializer
 
-class CompanySerializer(serializers.ModelSerializer):
+# class CompanySerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = Company
-        fields = ['id', 'user_account', 'company_name','alies', 'print_name', 'is_selected']
-        read_only_fields = ['id']
+#     class Meta:
+#         model = Company
+#         fields = ['id', 'user', 'name','alies', 'print_name', 'is_selected']
+#         read_only_fields = ['id']
 
     
 class LedgerSerializer(serializers.ModelSerializer):   
-    # id = serializers.IntegerField(read_only=True)
-    # access_code = AccessCodeSerializer(many=True)
-    # ledger_entries = TransactionSerializer(many = True)
-    # is_pre_defined = serializers.BooleanField(read_only=True)
     parent_name = serializers.CharField(source="parent.name", read_only=True)
     class Meta:
         model = Ledger
@@ -32,27 +28,10 @@ class LedgerSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, attrs:any):
-        
-        # ledger_nature = attrs.get('ledger_nature')
-        # parent_group_code = attrs.get('parent_group')
-        # access_code = attrs.get('access_code')
-        # print(access_code)
-        # if is_primary and not ledger_nature:
-        #     raise serializers.ValidationError({
-        #         'ledger_nature': 'nature of group Not Found'
-        #     })
-        # elif not is_primary and not parent_group_code :
-        #     raise serializers.ValidationError({
-        #         'parent_group_code': 'parent group code not Found'
-        #     })
+    # def validate(self, attrs:any):     
 
-        return attrs
+    #     return attrs
 
     def create(self, validated_data:any):   
-        # if 'code' not in validated_data or validated_data['code'] is None:
-        #     last_id = ledger.objects.aggregate(Max('code'))['code__max']
-        #     if last_id < 1000:
-        #         last_id = 1000
-        #     validated_data['code'] = last_id + 1
+        
         return super().create(validated_data)
