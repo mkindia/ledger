@@ -177,7 +177,6 @@ class TransactionSerializer(serializers.ModelSerializer):
         date = validated_data['date']
 
         with db_transaction.atomic():
-
              # ---- VOUCHER NUMBER VALIDATION ----
             config = get_or_create_voucher_config(company, voucher_type)
                        

@@ -57,27 +57,7 @@ class CompanyVoucherConfig(models.Model):
 
     def __str__(self):
        return self.voucher_type.name + " ( " +self.company.name + " ) "
-    
-class Transaction(models.Model):
-    
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    voucher_no = models.CharField(max_length=100, blank=True)
-    voucher_type = models.ForeignKey(VoucherType, on_delete=models.PROTECT)
-    date = models.DateField(auto_now=False, auto_now_add=False)
-    narration = models.CharField(max_length=200, blank=True)
-    created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
-    created_by = models.ForeignKey(UserAccount,related_name = 'voucher_ceated_by', on_delete=models.SET_NULL, blank=True, null=True)
-    modified_by = models.ForeignKey(UserAccount, related_name = 'voucher_modified_by', on_delete=models.SET_NULL, blank=True, null=True)
-
-    class Meta:
-        default_permissions = ()        
-        verbose_name = 'Transaction'
-        verbose_name_plural = 'Transactions'        
-
-    def __str__(self):
-        return f"Voucher_No - {self.pk}" 
-
+     
 class FinancialYear(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     start_date = models.DateField()
@@ -103,7 +83,6 @@ class VoucherSequence(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     voucher_type = models.ForeignKey(VoucherType, on_delete=models.CASCADE)
     financial_year = models.ForeignKey(FinancialYear, on_delete=models.CASCADE)
-
     current_number = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -115,6 +94,26 @@ class VoucherSequence(models.Model):
 
     def __str__(self):
        return self.voucher_type.name + " ( " +self.company.company_name + " ) "
+
+class Transaction(models.Model):
+    
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    voucher_no = models.CharField(max_length=100, blank=True)
+    voucher_type = models.ForeignKey(VoucherType, on_delete=models.PROTECT)
+    date = models.DateField(auto_now=False, auto_now_add=False)
+    narration = models.CharField(max_length=200, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modified_on = models.DateTimeField(auto_now=True, blank=True, null=True)
+    created_by = models.ForeignKey(UserAccount,related_name = 'voucher_ceated_by', on_delete=models.SET_NULL, blank=True, null=True)
+    modified_by = models.ForeignKey(UserAccount, related_name = 'voucher_modified_by', on_delete=models.SET_NULL, blank=True, null=True)
+
+    class Meta:
+        default_permissions = ()        
+        verbose_name = 'Transaction'
+        verbose_name_plural = 'Transactions'        
+
+    def __str__(self):
+        return f"Voucher_No - {self.pk}"
 
 class Entry(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='entries')

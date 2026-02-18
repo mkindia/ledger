@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save # type: ignore
 from django.dispatch import receiver # type: ignore
 from  .models import Company, UserCompanyPreference
+from useraccount.models import UserAccount
 from django.conf import settings
 from ledger.models import Ledger
 from transaction.models import VoucherType, CompanyVoucherConfig, FinancialYear
@@ -78,10 +79,10 @@ def calculate_financial_year(today=None):
 
     return start_date, end_date
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_user_preference(sender, instance, created, **kwargs):
-    if created:
-        preference, _ = UserCompanyPreference.objects.get_or_create(user=user)
+# @receiver(post_save, sender=UserAccount)
+# def create_user_preference(sender, instance, created, **kwargs):
+#     if created:
+#         UserCompanyPreference.objects.create(user=user)
 
 
 @receiver(post_save, sender=Company)
@@ -144,10 +145,10 @@ def create_default_ledgers_for_company(sender:any, created, instance, **kwargs):
                 raise ValueError("Invalid parent reference in DEFAULT_LEDGER_DEFS")
 
 
-# @receiver(post_save, sender=UserAccount)
-# def create_user_preference(sender, instance, created, **kwargs):
-#     if created:
-#         UserCompanyPreference.objects.create(user=instance)
+@receiver(post_save, sender=UserAccount)
+def create_user_preference(sender, instance, created, **kwargs):
+    if created:
+        UserCompanyPreference.objects.create(user=instance)
         
             
 

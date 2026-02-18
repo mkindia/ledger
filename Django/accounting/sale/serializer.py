@@ -23,7 +23,7 @@ class SalesInvoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SalesInvoice
-        fields = '__all__'
+        fields = ['company', 'items', 'sundries']
 
     # ✅ CREATE
     def create(self, validated_data):

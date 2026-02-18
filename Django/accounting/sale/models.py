@@ -1,11 +1,13 @@
 from django.db import models
 from ledger.models import Ledger
 from item.models import Item, ItemVariant
+from transaction.models import Transaction
+from company.models import Company
 
 # Create your models here.
 class SalesInvoice(models.Model):
-    invoice_no = models.CharField(max_length=30, unique=True)
-    invoice_date = models.DateField()
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
 
     billing_party = models.ForeignKey(
         Ledger,
@@ -24,24 +26,12 @@ class SalesInvoice(models.Model):
     item_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     sundry_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     grand_total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
 class SalesInvoiceItem(models.Model):
-    invoice = models.ForeignKey(
-        SalesInvoice,
-        related_name='items',
-        on_delete=models.CASCADE
-    )
-
+    invoice = models.ForeignKey(SalesInvoice, related_name='items', on_delete=models.CASCADE )
     item = models.ForeignKey(Item, on_delete=models.PROTECT)
-    variant = models.ForeignKey(
-        ItemVariant,
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True
-    )
-
+    variant = models.ForeignKey(ItemVariant, on_delete=models.PROTECT, null=True, blank=True)
     qty = models.DecimalField(max_digits=10, decimal_places=2)
     rate = models.DecimalField(max_digits=10, decimal_places=2)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
